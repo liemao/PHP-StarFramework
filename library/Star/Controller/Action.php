@@ -277,15 +277,17 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 	}
     
     /**
-     * 显示404页面 
+     * 显示404
+     * 
+     * @throws Star_Exception
      */
     protected function show404()
     {
-        $this->render('404', false);
+        throw new Star_Exception('404 not found.', 404);
     }
-
+    
     /**
-	 * 设置不显示底层
+	 * 设置不加载view
 	 */
     protected function setNoRender()
     {
