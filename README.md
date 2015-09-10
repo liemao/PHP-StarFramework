@@ -34,7 +34,7 @@ A classic Application directory layout:
 ```
 #DocumentRoot
 
-you should set DocumentRoot to application/public, thus only the public folder can be accessed by user
+you should set DocumentRoot to star_framework_path/public, thus only the public folder can be accessed by user
 
 #index.php
 ```php
