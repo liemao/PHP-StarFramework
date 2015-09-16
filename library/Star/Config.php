@@ -8,7 +8,7 @@
  * 配置文件类
  *
  * @package library\Star
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_Config {

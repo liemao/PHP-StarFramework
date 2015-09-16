@@ -7,7 +7,7 @@
  * 异常基类
  * 
  * @package library\Star
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_Exception extends Star_Exception_Abstract {

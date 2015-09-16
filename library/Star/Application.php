@@ -15,7 +15,7 @@ require 'Star/Model/Abstract.php';
  * 应用基类
  * 
  * @package library\Star
- * @author zqy
+ * @author zhangqinyang
  *
  */
 class Star_Application {

@@ -197,19 +197,19 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	 * 返回一行结果集
 	 * @param $select
 	 */
-	public function fetchRow($where, $conditions = null , $table = null)
+	public function fetchRow($where, $conditions = null , $table = null, $order = null)
 	{
 		if ($where instanceof Star_Model_Pdo_Mysql_Select)
 		{
 			$where->limit(1);
 		} 
-        $stmt = $this->_fetch($where, $conditions, $table);
+        $stmt = $this->_fetch($where, $conditions, $table, $order);
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
 	
-	public function fetchCol($where, $conditions = null , $table = null)
+	public function fetchCol($where, $conditions = null , $table = null, $order = null, $page = null, $page_size = null)
 	{  
-		$stmt = $this->_fetch($where, $conditions, $table);
+		$stmt = $this->_fetch($where, $conditions, $table, $order, $page, $page_size);
         $data = array();
 		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC))
 		{

@@ -8,7 +8,7 @@
  * String类
  * 
  * @package library\Star
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_String {

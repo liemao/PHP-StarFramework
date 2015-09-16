@@ -7,7 +7,7 @@
  * Start_view
  * 
  * @package library\Star\View
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 abstract class Star_View_Abstract {
@@ -378,7 +378,7 @@ abstract class Star_View_Abstract {
      */
     public function getStaticBasePath()
     {
-        return $this->static_options['base_path'];
+        return isset($this->static_options['base_path']) ? $this->static_options['base_path'] : "";
     }
     
     /**
@@ -388,7 +388,7 @@ abstract class Star_View_Abstract {
      */
     public function getStaticVersion()
     {
-        return $this->static_options['version'];
+        return isset($this->static_options['version']) ? $this->static_options['version'] : "";
     }
 
 
@@ -399,7 +399,7 @@ abstract class Star_View_Abstract {
      */
     public function getJsVersion()
     {
-        return $this->js_options['version'] ? $this->js_options['version'] : $this->static_options['version'];
+        return isset($this->js_options['version']) && $this->js_options['version'] ? $this->js_options['version'] : (isset($this->static_options['version']) ? $this->static_options['version'] : "");
     }
     
     /**
@@ -409,7 +409,7 @@ abstract class Star_View_Abstract {
      */
     public function getCssVersion()
     {
-        return $this->css_options['version'] ? $this->css_options['version'] : $this->static_options['version'];
+        return isset($this->css_options['version']) && $this->css_options['version'] ? $this->css_options['version'] : (isset($this->static_options['version']) ?  $this->static_options['version'] : "");
     }
     
     /**
@@ -538,7 +538,7 @@ abstract class Star_View_Abstract {
      */
     public function getJsBasePath()
     {
-        return $this->js_options['base_path'] ? $this->js_options['base_path'] : $this->static_options['base_path'];
+        return isset($this->js_options['base_path']) && $this->js_options['base_path'] ? $this->js_options['base_path'] : (isset($this->static_options['base_path']) ? $this->static_options['base_path'] : "");
     }
     
     /**
@@ -547,7 +547,7 @@ abstract class Star_View_Abstract {
      */
     public function getCssBasePath()
     {
-        return $this->css_options['base_path'] ? $this->css_options['base_path'] : $this->static_options['base_path'];
+        return isset($this->css_options['base_path']) && $this->css_options['base_path'] ? $this->css_options['base_path'] : (isset($this->static_options['base_path']) ? $this->static_options['base_path'] : "");
     }
     
     /**

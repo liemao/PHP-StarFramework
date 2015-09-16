@@ -13,7 +13,7 @@ require_once 'Star/Model/Mysqli/Select.php';
  * 数据模型 基类
  * 
  * @package library\Star\Model\Mysqli
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_Model_Mysqli_Abstract implements Star_Model_Interface
@@ -236,7 +236,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
      * @param type $table
      * @return array $result
      */
-	public function fetchRow($where, $conditions = null , $table = null)
+	public function fetchRow($where, $conditions = null , $table = null, $order = null)
 	{
 		if ($where instanceof Star_Model_Mysqli_Select)
 		{
@@ -244,7 +244,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 			
 			$sql = $where->assemble();
 		} else {
-            $sql = $this->getSql($where, $conditions, $table);
+            $sql = $this->getSql($where, $conditions, $table, $order);
         }
 		
 		$result = $this->_query($sql);
@@ -260,7 +260,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
      * @param type $table
      * @return array
      */
-	public function fetchCol($where, $conditions = null , $table = null)
+	public function fetchCol($where, $conditions = null , $table = null, $order = null, $page = null, $page_size = null)
 	{
 		$sql = '';
         

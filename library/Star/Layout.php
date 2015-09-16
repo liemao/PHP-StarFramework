@@ -24,7 +24,7 @@ class Star_Layout {
 	
 	protected $layout_base_path = null;
 	
-	protected $layout_script_path = null;
+	protected $layout_script_path = 'scripts';
 	
 	protected $view = null;
 	
@@ -197,7 +197,7 @@ class Star_Layout {
 		return $this->content_key;
 	}
 	
-	public function setContentKye($content_key)
+	public function setContentKey($content_key)
 	{
 		if (!empty($content_key))
 		{

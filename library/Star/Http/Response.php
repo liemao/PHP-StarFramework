@@ -6,7 +6,7 @@
  * Response 类
  *
  * @package library\Star\Http
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_Http_Response

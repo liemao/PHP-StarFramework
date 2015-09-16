@@ -7,7 +7,7 @@
  * http抽象类
  * 
  * @package library\Star\Http
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 abstract class Star_Http_Abstract

@@ -8,7 +8,7 @@
  * 全局变量
  * 
  * @package library\Star
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_Registry {

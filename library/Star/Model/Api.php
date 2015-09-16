@@ -7,7 +7,7 @@
  * API MODEL
  * 
  * @package library\Star\Model
- * @author qinyang.zhang  2013/08/26
+ * @author zhangqinyang  2013/08/26
  * 
  */
 Class Star_Model_Api

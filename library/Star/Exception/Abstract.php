@@ -8,7 +8,7 @@
  * 异常 抽象类
  * 
  * @package library\Star\Exception
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 abstract class Star_Exception_Abstract extends Exception {

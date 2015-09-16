@@ -7,7 +7,7 @@
  * 数据库检索 接口
  * 
  * @package library\Star\Model\Select
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 interface Star_Model_Select_Interface {

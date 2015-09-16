@@ -6,7 +6,7 @@
 /**
  *
  * @package library\Star\Model
- * @author qinyang.zhang 2010/05/27
+ * @author zhangqinyang 2010/05/27
  */
 abstract class Star_Model_Abstract
 {
@@ -117,7 +117,7 @@ abstract class Star_Model_Abstract
 	public function insert(array $data, $table = null)
 	{
         empty($table) && $table = $this->getTableName();
-		return $this->getDefaultAdapter()->insert($this->getTableName(), $data);
+		return $this->getDefaultAdapter()->insert($table, $data);
 	}
 
 	/**
@@ -125,11 +125,11 @@ abstract class Star_Model_Abstract
      * 
      * @param type $where
      * @param array $data
-     * @param type $table
-     * @param type $quote_indentifier
-     * @return type 
+     * @param bool $quote_indentifier
+     * @param string $table
+     * @return int 
      */
-	public function update($where, Array $data, $table = null, $quote_indentifier = true)
+	public function update($where, Array $data, $quote_indentifier = true, $table = null)
 	{
         empty($table) && $table = $this->getTableName();
 		$where = $this->setWhere($where);
@@ -169,12 +169,11 @@ abstract class Star_Model_Abstract
      * 返回相对应主键信息
      * 
      * @param type $pk_id
-     * @param type $table
      * @return type 
      */
     public function getPk($pk_id, $table = null)
     {
-        empty($table) && $table = $this->getTableName();
+        $table = $this->getTableName();
         $where = $this->setWhere($pk_id);
         return $this->getAdapter()->fetchRow($where, '*', $table);
     }
@@ -183,12 +182,12 @@ abstract class Star_Model_Abstract
      *
      * @param type $where
      * @param null $conditions
-     * @param null $table
      * @param null $order
      * @return type 
      */
-	public function fetchOne($where, $conditions = '*', $table = null, $order = null)
+	public function fetchOne($where, $conditions = '*', $order = null)
 	{
+        $table = $this->getTableName();
 		return $this->getAdapter()->fetchOne($where, $conditions, $table, $order);
 	}
 	
@@ -196,40 +195,43 @@ abstract class Star_Model_Abstract
      *
      * @param type $where
      * @param null $conditions
-     * @param null $table
      * @param null $order
      * @param null $page
      * @param null $page_size
      * @return type 
      */
-	public function fetchAll($where, $conditions = '*', $table = null, $order = null, $page = null, $page_size = null)
+	public function fetchAll($where, $conditions = '*', $order = null, $page = null, $page_size = null)
 	{
+        $table = $this->getTableName();
 		return $this->getAdapter()->fetchAll($where, $conditions, $table, $order, $page, $page_size);
 	}
 	
     /**
      *
      * @param type $where
-     * @param null $conditions
-     * @param null $table
+     * @param $conditions
+     * @param string $order
      * @return type 
      */
-	public function fetchRow($where, $conditions = '*' , $table = null)
+	public function fetchRow($where, $conditions = '*', $order = null)
 	{
-		return $this->getAdapter()->fetchRow($where, $conditions , $table);
+        $table = $this->getTableName();
+		return $this->getAdapter()->fetchRow($where, $conditions , $table, $order);
 	}
 	
     /**
-     *
+     * 
      * @param type $where
-     * @param null $conditions
-     * @param null $table
-     * @return type 
+     * @param string $conditions
+     * @param string $order
+     * @param int $page
+     * @param int $page_size
+     * @return array
      */
-	public function fetchCol($where, $conditions = '*', $table = null, $order = null, $page = null, $page_size = null)
+	public function fetchCol($where, $conditions = '*', $order = null, $page = null, $page_size = null)
 	{
-		$data = $this->getAdapter()->fetchCol($where, $conditions = '*', $table = null, $order = null, $page = null, $page_size = null);
-		return $data;
+        $table = $this->getTableName();
+		return $this->getAdapter()->fetchCol($where, $conditions, $table, $order, $page, $page_size);
 	}
 	
 	public function select()
@@ -257,11 +259,13 @@ abstract class Star_Model_Abstract
 		if (self::$_db !== null && self::$_db !== self::$_default_db)
 		{
 			self::$_db->close();
+            self::$_db = null;
 		}
 
 		if (self::$_default_db !== null)
 		{
 			self::$_default_db->close();
+            self::$_default_db = null;
 		}
 	}
 	

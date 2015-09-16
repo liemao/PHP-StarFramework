@@ -12,7 +12,7 @@ require 'Star/View/Abstract.php';
  * Start_view
  *
  * @package library\Star
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_View extends Star_View_Abstract{

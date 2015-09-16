@@ -6,7 +6,7 @@
 /**
  *
  * @package library\Star\Model
- * @author qinyang.zhang  2010/05/27
+ * @author zhangqinyang 2010/05/27
  *
  */
 interface Star_Model_Interface {

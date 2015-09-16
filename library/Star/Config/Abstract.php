@@ -10,7 +10,7 @@
  * 处理.Ini配置文件
  *
  * @package library\Star\Application\Config
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 Abstract class Star_Config_Abstract {

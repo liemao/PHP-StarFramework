@@ -12,7 +12,7 @@ require 'Star/Http/Abstract.php';
  * request 类
  * 
  * @package library\Star\Http
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_Http_Request extends Star_Http_Abstract

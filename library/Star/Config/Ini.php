@@ -15,7 +15,7 @@ require 'Star/Config/Abstract.php';
  * 处理.Ini配置文件
  *
  * @package library\Star\Application\Config
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_Config_Ini extends Star_Config_Abstract{

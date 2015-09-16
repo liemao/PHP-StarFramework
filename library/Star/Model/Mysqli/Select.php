@@ -12,7 +12,7 @@ require_once 'Star/Model/Select/Interface.php';
  * 数据库操作类
  * 
  * @package library\Star\Model\Mysqli
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 class Star_Model_Mysqli_Select implements Star_Model_Select_Interface

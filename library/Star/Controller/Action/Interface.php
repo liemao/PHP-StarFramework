@@ -7,7 +7,7 @@
  * 控制器 接口
  *
  * @package library\Star\Controller\Action
- * @author zhangqy
+ * @author zhangqinyang
  *
  */
 interface Star_Controller_Action_Interface {

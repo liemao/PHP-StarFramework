@@ -7,7 +7,7 @@
  * 分页类
  * 
  * @package library
- * @author zqy
+ * @author zhangqinyang
  * @version 1.0
  */
 class Star_Page
@@ -38,7 +38,7 @@ class Star_Page
 	
 	private $show_language = array(
 		'zh' => array('first_page'=>'首页', 'last_page'=>'尾页', 'pre_page'=>'上一页', 'next_page'=>'下一页'), 
-		'en' => array('first_page'=>'Frist_page', 'last_page'=>'Last_page', 'pre_page'=>'Pre_page', 'next_page'=>'Next_page')
+		'en' => array('first_page'=>'Frist_page', 'last_page'=>'Last_page', 'pre_page'=>'Pre_page', 'next_page'=>'Next_page'),
 	);
 	
 	private $support = array('zh', 'en');
@@ -47,7 +47,11 @@ class Star_Page
 	{
 
 	}
-
+    
+    /**
+     * 初始化
+     * @param type $page_array
+     */
 	public function init($page_array = array())
 	{
 		self::$instance->page             = isset($page_array['page']) ? $page_array['page'] : self::$instance->page;
@@ -151,6 +155,10 @@ class Star_Page
 		return $result;
 	}
 	
+    /**
+     * 懒惰模式
+     * @return int
+     */
 	private function lazy()
 	{
 		$last_page = ceil(self::$instance->total/self::$instance->page_size);
@@ -159,6 +167,7 @@ class Star_Page
 	
 	/**
 	 * 确认是否支持设置语言，不支持则显示中文
+     * @return string
 	 */
 	private function confirmLanguage()
 	{
@@ -171,6 +180,7 @@ class Star_Page
 		
 	/**
 	 * 当前页面前后显示几个分页链接
+     * @return int
 	 */
 	private function average()
 	{
@@ -183,7 +193,7 @@ class Star_Page
 	 * @param string $page_name
 	 * @return string
 	 */
-	private function produceLink($page, $page_name)
+	private static function produceLink($page, $page_name)
 	{
 		if (is_numeric($page_name) && $page==self::$instance->page)
 		{
@@ -209,15 +219,16 @@ class Star_Page
 	/**
 	 * 当前页面信息
 	 * @param string $page_name
+     * @return string
 	 */
 	private function currentPage($page_name)
 	{
 		if (self::$instance->tag == true)
 		{
-			$link = "<span>" . self::$instance->tag_head . $page_name . self::$instance->tag_foot . "</span>";
+			$link = "<span ". (is_numeric($page_name) ? '' : "class='disabled'") .">" . self::$instance->tag_head . $page_name . self::$instance->tag_foot . "</span>";
 		} else
 		{
-			$link = "<span>" . $page_name . "</span>";
+			$link = "<span ". (is_numeric($page_name) ? '' : "class='disabled'") .">" . $page_name . "</span>";
 		}
 		return $link;
 	}
@@ -225,16 +236,18 @@ class Star_Page
 	/**
 	 * 不添加标签
 	 * @param string $page_name
+     * @return string
 	 */
 	private function withoutTag($page_name)
 	{
-		$link = "<a href='" . self::$instance->link . "'>". $page_name ."</a>";
+		$link = "<a href='" . self::$instance->link . "' page=? >". $page_name ."</a>";
 		return $link;
 	}
 	
 	/**
 	 * 外标签
 	 * @param $page_name
+     * @return string
 	 */
 	private function outerTag($page_name)
 	{
@@ -246,15 +259,17 @@ class Star_Page
 	/**
 	 * 内标签
 	 * @param $page_name
+     * @return string
 	 */
 	private function innerTag($page_name)
 	{
-		$link = "<a href='" . self::$instance->link . "'>". self::$instance->tag_head . $page_name . self::$instance->tag_foot ."</a>";
+		$link = "<a href='" . self::$instance->link . "' page=? >". self::$instance->tag_head . $page_name . self::$instance->tag_foot ."</a>";
 		return $link;
 	}
 	
 	/**
 	 * 获取首页信息
+     * @return string
 	 */
 	private function getFirstPage()
 	{
@@ -265,6 +280,7 @@ class Star_Page
 	
 	/**
 	 * 获取尾页信息
+     * @return string
 	 */
 	private function getLastPage()
 	{
@@ -275,6 +291,7 @@ class Star_Page
 	
 	/**
 	 * 获取上一页信息
+     * @return string
 	 */
 	private function getPrePage()
 	{
@@ -290,6 +307,7 @@ class Star_Page
 	
 	/**
 	 * 获取下一页信息
+     * @return string
 	 */
 	private function getNextPage()
 	{
@@ -303,6 +321,10 @@ class Star_Page
 		return self::$instance->produceLink($page, $page_name);
 	}
 	
+    /**
+     * 设置页面URL
+     * @return string
+     */
 	private function setLink()
 	{
 		$uri = $_SERVER['REQUEST_URI'];
@@ -328,3 +350,4 @@ class Star_Page
 	}
 }
 
+?>
