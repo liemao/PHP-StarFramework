@@ -55,7 +55,7 @@ class Star_Cache {
      * 获取一个缓存实例
      * @return type 
      */
-    public function getCache()
+    public static function getCache()
     {
         if (self::$instance->cache === null)
         {

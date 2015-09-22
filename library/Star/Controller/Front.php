@@ -537,7 +537,7 @@ class Star_Controller_Front{
         {
             echo nl2br($e->__toString());
         }else{
-            call_user_func(array('Star_Log', 'log'), $e->__toString());
+            call_user_func(array('Star_Log', 'log'), $e->__toString(), 'error');
         }
         
         if ($e->getCode() == 500)

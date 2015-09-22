@@ -175,7 +175,7 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	public function fetchAll($where, $conditions = null, $table = null, $order = null, $page = null, $page_size = null)
 	{
 		$stmt = $this->_fetch($where, $conditions, $table, $order, $page, $page_size);
-		return $stmt->fetchAll();
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
 	/**

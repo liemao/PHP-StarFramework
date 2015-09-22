@@ -36,8 +36,7 @@ abstract class Star_View_Abstract {
 
     /**
      * 构造方法
-     * @param string $application_path
-     * @param unknown $options
+     * @param array $options
      */
     public function __construct($options = array())
 	{	
@@ -54,8 +53,8 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 设置控制器名
-	 * @param unknown $script_name
-	 * @param string $is_controller
+	 * @param string $script_name
+	 * @param bool $is_controller
 	 * @return Star_View_Abstract
 	 */
 	public function setScriptName($script_name, $is_controller = true)
@@ -66,8 +65,8 @@ abstract class Star_View_Abstract {
 	}
 	
 	/**
-	 * 是否显示底层
-	 * @param unknown $is_display
+	 * 是否加载view
+	 * @param bool $is_display
 	 */
     protected function setDisplay($is_display)
     {
@@ -81,7 +80,7 @@ abstract class Star_View_Abstract {
     }
     
     /**
-     * 设置不显示底层
+     * 设置不加载view
      * @return Star_View_Abstract
      */
 	public function setNoRender()
@@ -91,7 +90,7 @@ abstract class Star_View_Abstract {
 	}
     
 	/**
-	 * 设置显示底层
+	 * 设置加载view
 	 * @return Star_View_Abstract
 	 */
     public function setRender()
@@ -131,7 +130,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 设置控制器
-	 * @param unknown $controller
+	 * @param string $controller
 	 * @return Star_View_Abstract
 	 */
 	public function setController($controller)
@@ -142,7 +141,7 @@ abstract class Star_View_Abstract {
     
 	/**
 	 * 设置控制器中具体某方法
-	 * @param unknown $action
+	 * @param tring $action
 	 * @return Star_View_Abstract
 	 */
     public function setAction($action)
@@ -235,7 +234,7 @@ abstract class Star_View_Abstract {
 	}
 	
 	/**
-	 * 获取样式
+	 * 获取layout文件名
 	 * @return string
 	 */
 	public function layout()
@@ -244,7 +243,7 @@ abstract class Star_View_Abstract {
 	}
 	
 	/**
-	 * 设置样式
+	 * 设置layout
 	 * @param Star_Layout $star_layout
 	 * @return Star_View_Abstract
 	 */
@@ -707,7 +706,7 @@ abstract class Star_View_Abstract {
     public function getCacheFileName()
     {
         $segments = array(
-            $this->_base_name,
+            dirname($this->_base_name),
             $this->cache_directory,
             $this->_controller,
             $this->_action,
@@ -715,7 +714,6 @@ abstract class Star_View_Abstract {
         );
         
         $path = Star_Loader::getFilePath($segments, '.html');
-  
         return $path;
     }
     

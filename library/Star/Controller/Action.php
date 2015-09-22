@@ -266,14 +266,21 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 			'message' => $args[0] > 0 ? $args[1] : $args[2],
 		);
 
-        if($args[0] == 0 && isset($args[1])){
+        if($args[0] == 0 && isset($args[1]))
+        {
             $message['data'] = $args[1];
         }
 
         $this->disableLayout();
         $this->view->setNoRender();
-        header('Content-Type: application/json');
-		echo isset($_GET['cb'])  && !empty($_GET['cb']) ? htmlspecialchars($_GET['cb']) . '(' . json_encode($message) . ')' : json_encode($message);
+        
+        if (isset($_GET['cb']) && !empty($_GET['cb']))
+        {
+            echo htmlspecialchars($_GET['cb']) . '(' . json_encode($message) . ')';
+        } else{
+            header('Content-Type: application/json');
+            echo json_encode($message);
+        }
 	}
     
     /**
@@ -309,7 +316,7 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
      */
     protected function openCache($cache_key = '', $timeout = 0, $is_flush = false)
     {
-        !empty($cache_key) && $cache_key = $this->getRequest()->getActionName();
+        empty($cache_key) && $cache_key = $this->getRequest()->getActionName();
         $this->view->openCache($cache_key, $timeout, $is_flush);
     }
     

@@ -174,21 +174,30 @@ class Star_Date {
     }
     
     /**
-     * 花费时间转换为时间格式
+     * 秒转换为之前时间
      * 
-     * @param type $time 
+     * @param int second 
      */
-    public static function agoTime($time)
+    public static function agoTime($second)
     {
         $ago_time = '';
-        if ($time < 3600)
+        if ($second == 0)
         {
-            $ago_time = intval($time / 60) . '分钟';
-        } else if ($time < 86400)
+            $ago_time = '刚刚';
+        }else if ($second < 60){
+            $ago_time = $second . '秒前';
+        }else if ($second < 3600)
         {
-            $ago_time = intval($time/3600) . '小时' . intval(($time%3600)/60) . '分钟';
-        } else {
-            $ago_time = intval($time/86400) . '天' . intval(($time%86400)/3600) . '小时' . intval(($time%3600)/60) . '分钟';
+            $ago_time = floor($second / 60) . '分钟前';
+        } else if ($second < 86400)
+        {
+            $ago_time = floor($second/3600) . '小时' . intval(($second%3600)/60) . '分钟前';
+        } else if ($second < 86400 * 30){
+            $ago_time = floor($second/86400) . '天前';
+        } else if ($second < 86400*365){
+            $ago_time = floor($second/86400*30) . '月前';
+        } else{
+            $ago_time = floor($second/86400*365) . '年前';
         }
         return $ago_time;
     }
