@@ -1,5 +1,5 @@
 # PHP-StarFramework
-Star Framework是一个简单、高效、实用的PHP框架。
+Star Framework是一个简单、高效、实用的PHP框架。 官网： http://www.starframework.cn
 #Requirement
 PHP5.2+
 #Layout
