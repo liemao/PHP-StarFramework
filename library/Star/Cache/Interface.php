@@ -13,29 +13,29 @@ interface Star_Cache_Interface {
 	
 	/**
 	 * 添加缓存项
-	 * @param unknown $key
-	 * @param unknown $value
-	 * @param number $lefttime
+	 * @param string $key
+	 * @param  string|array $value
+	 * @param int $lefttime
 	 */
 	public function add($key, $value, $lefttime = 0);
 	
 	/**
 	 * 获取缓存项
-	 * @param unknown $key
+	 * @param string $key
 	 */
 	public function get($key);
 	
 	/**
 	 * 添加缓存项
-	 * @param unknown $key
-	 * @param unknown $value
-	 * @param number $lefttime
+	 * @param string $key
+	 * @param string|array $value
+	 * @param int $lefttime
 	 */
 	public function set($key, $value, $lefttime = 0);
 	
 	/**
 	 * 销毁缓存项
-	 * @param unknown $key
+	 * @param string $key
 	 */
 	public function delete($key);
 }

@@ -20,11 +20,20 @@ class Star_Loader {
 		'model' => 'models',
 	);
 	
+    /**
+     * 构造函数
+     */
 	public function __construct()
 	{
 		
 	}
 	
+    /**
+     * 设置application路径
+     * 
+     * @param type $app_path
+     * @return \Star_Loader
+     */
 	public function setApplicationPath($app_path)
 	{
 		self::$app_path = $app_path;
@@ -59,6 +68,13 @@ class Star_Loader {
 		}
 	}
 	
+    /**
+     * 加载类
+     * 
+     * @param type $class
+     * @param type $dir_path
+     * @return type
+     */
 	public function loadClass($class, $dir_path)
 	{
 		return $class;
@@ -76,6 +92,12 @@ class Star_Loader {
 		return self::$autoload_types[$key] = $value;
 	}
 	
+    /**
+     * 返回key加载文件类型
+     * 
+     * @param type $key
+     * @return type
+     */
     public static function getLoadTypeByKey($key)
     {
         $key = strtolower($key);
@@ -170,6 +192,13 @@ class Star_Loader {
 		
 	}
 	
+    /**
+     * 魔法方法call
+     * 
+     * @param type $calss_name
+     * @param type $args
+     * @return type
+     */
 	public function __call($calss_name, $args)
 	{
 		return ;
@@ -186,6 +215,12 @@ class Star_Loader {
 		return class_exists($class_name);
 	}
 	
+    /**
+     * 文件是否可读
+     * 
+     * @param type $path
+     * @return boolean
+     */
 	public static function isReadable($path)
 	{
 		if (is_readable($path))
@@ -197,6 +232,12 @@ class Star_Loader {
 		}
 	}
 	
+    /**
+     * 设置框架路径
+     * 
+     * @param type $path
+     * @return \Star_Loader
+     */
 	public function setLibraryPath($path)
 	{
 		if (!empty($path))
@@ -207,11 +248,22 @@ class Star_Loader {
 		return $this;
 	}
 	
+    /**
+     * 返回框架路径
+     * 
+     * @return type
+     */
 	public function getLibraryPath()
 	{
 		return self::$library_path;
 	}
     
+    /**
+     * 文件是否存在
+     * 
+     * @param type $file_path
+     * @return type
+     */
     public static function isExist($file_path)
     {
         return file_exists($file_path) ? true : false;

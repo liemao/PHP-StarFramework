@@ -43,7 +43,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	const SQL_WHERE = 'WHERE';
 	
-	const SQL_SELET = 'SELECT';
+	const SQL_SELECT = 'SELECT';
 	
 	const SQL_AND = 'AND';
 	
@@ -98,6 +98,13 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $this;
 	}
 	
+    /**
+     * 设置where
+     * 
+     * @param string $conditions
+     * @param type $value
+     * @param type $where_type
+     */
 	protected function setWhere($conditions, $value = null, $where_type = self::SQL_AND)
 	{
 		$conditions = '(' . $conditions . ')';
@@ -109,14 +116,24 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		$this->_where[] = !count($this->_where) ? $conditions :  $where_type . ' ' . $conditions;
 	}
 	
+    /**
+     * 引号添加反斜杠 防止注入
+     * 
+     * @param type $value
+     * @return type
+     */
 	protected function disposeQuote($value)
 	{
 		return addslashes($value);
 	}
-	/**
-	 * 添加一个where 中的or语句
-	 * @see Star_Model_Select_Interface::orWhere()
-	 */
+	
+    /**
+     * 添加一个where 中的or语句
+     * 
+     * @param type $conditions
+     * @param type $value
+     * @return \Star_Model_Pdo_Mysql_Select
+     */
 	public function orWhere($conditions, $value = null)
 	{
 		$this->setWhere($conditions, $value, self::SQL_OR);
@@ -126,6 +143,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 
 	/**
 	 * 设置所要查询的表与字段
+     * 
 	 * @param $table
 	 * @param $columns
 	 */
@@ -136,6 +154,13 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $this;
 	}
 	
+    /**
+     * 设置表名
+     * 
+     * @param string $table
+     * @param bool $is_join
+     * @return type
+     */
 	protected function setTable($table, $is_join=true)
 	{
         $alias = '';
@@ -157,6 +182,13 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		}
 	}
 	
+    /**
+     * 设置查询字段
+     * 
+     * @param type $table_name
+     * @param type $columns
+     * @param type $alias
+     */
 	protected function setColumn($table_name, $columns, $alias)
 	{
         if ($columns)
@@ -183,6 +215,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 左外连接表
+     * 
 	 * @param $table 所要外连的表
 	 * @param $conditions 查询条件
 	 * @param $columns 查询字段
@@ -195,6 +228,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 右外连接
+     * 
 	 * @param $table 所要外连的表
 	 * @param $conditions 查询条件
 	 * @param $columns 查询字段
@@ -207,6 +241,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 内连接
+     * 
 	 * @param $table 所要外连的表
 	 * @param $conditions 查询条件
 	 * @param $columns 查询字段
@@ -217,6 +252,14 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $this;
 	}
 	
+    /**
+     * 设置连接条件
+     * 
+     * @param string $join_type
+     * @param string $table
+     * @param type $conditions
+     * @param type $columns
+     */
 	protected function setJoin($join_type, $table, $conditions, $columns)
 	{
 		extract($this->setTable($table, true));
@@ -238,6 +281,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 设置having子句  or条件
+     * 
 	 * @param unknown $spec
 	 * @return Star_Model_Mysqli_Select
 	 */
@@ -247,6 +291,12 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $this;
 	}
 	
+    /**
+     * 设置Having参数
+     * 
+     * @param type $spec
+     * @param type $having_type
+     */
 	protected function setHaving($spec, $having_type = self::SQL_AND)
 	{
 		$spec = is_string($spec) ? array($spec) : $spec;
@@ -258,6 +308,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 设计记录获取条数
+     * 
 	 * @param $number 所要获取的记录条数
 	 */
 	public function limit($number)
@@ -268,6 +319,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 分页查询
+     * 
 	 * @param $page           
 	 * @param $page_number
 	 */
@@ -282,6 +334,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 添加分组查询条件
+     * 
 	 * @param $spec 分组字段  
 	 */
 	public function group($spec)
@@ -296,6 +349,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 设置排序条件
+     * 
 	 * @param $spec 排序字段  
 	 */
 	public function order($spec)
@@ -317,16 +371,18 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 查询
+     * 
 	 * @param unknown $sql
 	 * @return string
 	 */
 	protected function renderSelect($sql)
 	{
-		return $sql = self::SQL_SELET;
+		return $sql = self::SQL_SELECT;
 	}
 	
 	/**
 	 * 查询字段
+     * 
 	 * @param unknown $sql
 	 * @return string
 	 */
@@ -337,6 +393,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 查询添加form
+     * 
 	 * @param unknown $sql
 	 * @return string
 	 */
@@ -346,6 +403,12 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $sql .= empty($this->_alias) ? '`'.$this->_table.'`' : '`'.$this->_table . '` `' . $this->_alias.'`';
 	}
 	
+    /**
+     * 查询添加join
+     * 
+     * @param string $sql
+     * @return string
+     */
 	protected function renderJoin($sql)
 	{
 		if (!empty($this->_join) && is_array($this->_join))
@@ -358,6 +421,12 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $sql;
 	}
 	
+    /**
+     * 查询添加where条件
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderWhere($sql)
 	{
 		if (!empty($this->_where) && is_array($this->_where))
@@ -368,6 +437,12 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $sql;
 	}
 	
+    /**
+     * 查询添加group条件
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderGroup($sql)
 	{
 		if (!empty($this->_group_by) && is_array($this->_group_by))
@@ -379,6 +454,12 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $sql;
 	}
 	
+    /**
+     * 查询添加having条件
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderHaving($sql)
 	{
 		if (!empty($this->_having) && is_array($this->_having))
@@ -389,6 +470,12 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return $sql;
 	}
 	
+    /**
+     * 查询添加order排序
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderOrder($sql)
 	{
 		if (!empty($this->_order_by) && is_array($this->_order_by))
@@ -399,6 +486,12 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		return  $sql;
 	}
 	
+    /**
+     * 查询添加限制条数
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderLimit($sql)
 	{
 		if (!empty($this->_limit) || !empty($this->_limit_page))
@@ -430,6 +523,11 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
         );
 	}
 	
+    /**
+     * 返回SQL语句
+     * 
+     * @return type
+     */
 	public function __toString()
 	{
 		try {

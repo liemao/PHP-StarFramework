@@ -53,6 +53,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 设置控制器名
+     * 
 	 * @param string $script_name
 	 * @param bool $is_controller
 	 * @return Star_View_Abstract
@@ -66,6 +67,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 是否加载view
+     * 
 	 * @param bool $is_display
 	 */
     protected function setDisplay($is_display)
@@ -81,6 +83,7 @@ abstract class Star_View_Abstract {
     
     /**
      * 设置不加载view
+     * 
      * @return Star_View_Abstract
      */
 	public function setNoRender()
@@ -91,6 +94,7 @@ abstract class Star_View_Abstract {
     
 	/**
 	 * 设置加载view
+     * 
 	 * @return Star_View_Abstract
 	 */
     public function setRender()
@@ -101,6 +105,7 @@ abstract class Star_View_Abstract {
 	
     /**
      * 设置基础路径
+     * 
      * @param unknown $base_path
      * @return Star_View_Abstract
      */
@@ -141,6 +146,7 @@ abstract class Star_View_Abstract {
     
 	/**
 	 * 设置控制器中具体某方法
+     * 
 	 * @param tring $action
 	 * @return Star_View_Abstract
 	 */
@@ -152,6 +158,7 @@ abstract class Star_View_Abstract {
 	
     /**
      * 获取视图路径
+     * 
      * @return Ambigous <type, string>
      */
 	private function getViewPath()
@@ -191,6 +198,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 加载视图
+     * 
 	 * @throws Star_Exception
 	 */
 	public function loadView()
@@ -215,6 +223,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 设置视图模板
+     * 
 	 * @param unknown $theme
 	 * @return Star_View_Abstract
 	 */
@@ -226,6 +235,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 获取视图模板
+     * 
 	 * @return string
 	 */
 	public function getTheme()
@@ -235,6 +245,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 获取layout文件名
+     * 
 	 * @return string
 	 */
 	public function layout()
@@ -244,6 +255,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 设置layout
+     * 
 	 * @param Star_Layout $star_layout
 	 * @return Star_View_Abstract
 	 */
@@ -255,6 +267,7 @@ abstract class Star_View_Abstract {
 	
 	/**
 	 * 保存变量至视图变量
+     * 
 	 * @param unknown $key
 	 * @param string $value
 	 * @return Star_View_Abstract
@@ -348,13 +361,18 @@ abstract class Star_View_Abstract {
     }
     
     /**
-     * 设置css加载文件
+     * 设置js加载文件
      * 
      * @param type $files 
      */
     public function setJsFiles($files)
     {
-        $this->js_options['files'] = array_merge((array) $this->js_options['files'], (array) $files);
+        if (isset($this->js_options['files']))
+        {
+            $this->js_options['files'] = array_merge((array) $this->js_options['files'], (array) $files);
+        } else{
+            $this->js_options['files'] = (array) $files;
+        }
         return $this;
     }
     
@@ -366,7 +384,12 @@ abstract class Star_View_Abstract {
      */
     public function setCssFiles($files)
     {
-        $this->css_options['files'] = array_merge((array) $this->css_options['files'], (array) $files);
+        if (isset($this->css_options['files']))
+        {
+            $this->css_options['files'] = array_merge((array) $this->css_options['files'], (array) $files);
+        } else{
+            $this->css_options['files'] = (array) $files;
+        }
         return $this;
     }
     
@@ -511,6 +534,7 @@ abstract class Star_View_Abstract {
     
     /**
      * 读取页面CSS HTML体
+     * 
      * @return string
      */
     public function loadCss()
@@ -551,6 +575,7 @@ abstract class Star_View_Abstract {
     
     /**
      * 设置缓存超时时间
+     * 
      * @param unknown $timeout
      * @return Star_View_Abstract
      */
@@ -584,6 +609,7 @@ abstract class Star_View_Abstract {
     
     /**
      * 判断缓存是否过期
+     * 
      * @return boolean
      */
     public function cacheIsExpire()
@@ -633,6 +659,7 @@ abstract class Star_View_Abstract {
     
     /**
      * 清空缓存
+     * 
      * @return boolean
      */
     public function flushCache()
@@ -643,6 +670,7 @@ abstract class Star_View_Abstract {
 
     /**
      * 保存缓存内容
+     * 
      * @param unknown $body
      * @throws Star_Exception
      */
@@ -666,6 +694,7 @@ abstract class Star_View_Abstract {
 
     /**
      * 开启页面缓存
+     * 
      * @param string $cache_name
      * @param number $timeout
      * @param string $is_flush
@@ -692,6 +721,7 @@ abstract class Star_View_Abstract {
     
     /**
      * 设置缓存名称
+     * 
      * @param unknown $cache_name
      */
     public function setCacheName($cache_name)
@@ -701,6 +731,7 @@ abstract class Star_View_Abstract {
     
     /**
      * 返回文件路径
+     * 
      * @return Ambigous <type, string>
      */
     public function getCacheFileName()
@@ -730,20 +761,24 @@ abstract class Star_View_Abstract {
         }
     }
     
-    public function __set($name, $value) {
+    public function __set($name, $value) 
+    {
         $this->assign[$name] = $value;
     }
     
-    public function __get($name) {
+    public function __get($name) 
+    {
         return isset($this->assign[$name]) ? $this->assign[$name] : '';
     }
 
     /**
      * 导入模板
+     * 
      * @param $file_name
      * @return type
      */
-    public function loadTemplate($file_name){
+    public function loadTemplate($file_name)
+    {
 
         $view_path = $this->getTemplatePath($file_name);
         if (!is_file($view_path))
@@ -758,10 +793,12 @@ abstract class Star_View_Abstract {
 
     /**
      * 获取模板绝对地址
+     * 
      * @param $file_name
      * @return type
      */
-    private function getTemplatePath($file_name){
+    private function getTemplatePath($file_name)
+    {
         $view_segments = array($this->_base_name, $this->_template_name,$file_name);
         $view_path = Star_Loader::getFilePath($view_segments, $this->_postfix);
         return $view_path;

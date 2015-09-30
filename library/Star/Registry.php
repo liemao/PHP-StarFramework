@@ -58,7 +58,9 @@ class Star_Registry {
         return isset(self::$registry[$key]);
     }
 
-
+    /**
+     * 销毁
+     */
     public static function destroy()
 	{
 		self::$registry = null;

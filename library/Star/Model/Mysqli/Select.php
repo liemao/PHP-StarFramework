@@ -41,7 +41,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	const SQL_WHERE = 'WHERE';
 	
-	const SQL_SELET = 'SELECT';
+	const SQL_SELECT = 'SELECT';
 	
 	const SQL_AND = 'AND';
 	
@@ -87,7 +87,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	 * 添加一个where条件
 	 * 
 	 * @param string $conditions
-	 * @param array or string $value
+	 * @param array|string $value
 	 * @return Mysql_Select object
 	 */
 	public function where($conditions, $value = null)
@@ -96,6 +96,13 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $this;
 	}
 	
+    /**
+     * 设置where
+     * 
+     * @param type $conditions
+     * @param type $value
+     * @param type $where_type
+     */
 	protected function setWhere($conditions, $value = null, $where_type = self::SQL_AND)
 	{
 		$conditions = '(' . $conditions . ')';
@@ -107,14 +114,24 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		$this->_where[] = !count($this->_where) ? $conditions :  $where_type . ' ' . $conditions;
 	}
 	
+    /**
+     * 双引号添加反斜杠 防止注入攻击
+     * 
+     * @param string $value
+     * @return type
+     */
 	protected function disposeQuote($value)
 	{
 		return addslashes($value);
 	}
+    
 	/**
-	 * 添加一个where 中的or语句
-	 * @see Star_Model_Select_Interface::orWhere()
-	 */
+     * 添加一个where 中的or语句
+     * 
+     * @param string $conditions
+     * @param string $value
+     * @return \Star_Model_Mysqli_Select
+     */
 	public function orWhere($conditions, $value = null)
 	{
 		$this->setWhere($conditions, $value, self::SQL_OR);
@@ -124,6 +141,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 
 	/**
 	 * 设置所要查询的表与字段
+     * 
 	 * @param $table
 	 * @param $columns
 	 */
@@ -134,6 +152,13 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $this;
 	}
 	
+    /**
+     * 设置表名
+     * 
+     * @param string $table
+     * @param bool $is_join
+     * @return array
+     */
 	protected function setTable($table, $is_join=true)
 	{
         $alias = '';
@@ -155,6 +180,13 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		}
 	}
 	
+    /**
+     * 设置查询字段
+     * 
+     * @param string $table_name
+     * @param string|array $columns
+     * @param string $alias
+     */
 	protected function setColumn($table_name, $columns, $alias)
 	{
         if ($columns)
@@ -174,6 +206,13 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
         }
 	}
 	
+    /**
+     * 设置表别名
+     * 
+     * @param type $table_name
+     * @param type $alias
+     * @return type
+     */
 	protected function setAlias($table_name, $alias)
 	{
 		return empty($alias) ? $table_name : $alias;
@@ -181,6 +220,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 左外连接表
+     * 
 	 * @param $table 所要外连的表
 	 * @param $conditions 查询条件
 	 * @param $columns 查询字段
@@ -193,6 +233,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 右外连接
+     * 
 	 * @param $table 所要外连的表
 	 * @param $conditions 查询条件
 	 * @param $columns 查询字段
@@ -205,6 +246,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 内连接
+     * 
 	 * @param $table 所要外连的表
 	 * @param $conditions 查询条件
 	 * @param $columns 查询字段
@@ -215,6 +257,14 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $this;
 	}
 	
+    /**
+     * 设置连接条件
+     * 
+     * @param type $join_type
+     * @param type $table
+     * @param type $conditions
+     * @param type $columns
+     */
 	protected function setJoin($join_type, $table, $conditions, $columns)
 	{
 		extract($this->setTable($table, true));
@@ -225,9 +275,11 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	}
 	
 	/**
-	 * 设置having子句
-	 * @param $spec 包含值
-	 */
+     * 设置having子句
+     * 
+     * @param type $spec
+     * @return \Star_Model_Mysqli_Select
+     */
 	public function having($spec)
 	{
 		$this->setHaving($spec, self::SQL_AND);
@@ -236,7 +288,8 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 设置having子句  or条件
-	 * @param unknown $spec
+     * 
+	 * @param string $spec
 	 * @return Star_Model_Mysqli_Select
 	 */
 	public function orHaving($spec)
@@ -245,6 +298,12 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $this;
 	}
 	
+    /**
+     * 设置Having参数
+     * 
+     * @param type $spec
+     * @param type $having_type
+     */
 	protected function setHaving($spec, $having_type = self::SQL_AND)
 	{
 		$spec = is_string($spec) ? array($spec) : $spec;
@@ -255,7 +314,8 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	}
 	
 	/**
-	 * 设计记录获取条数
+	 * 限制获取条数
+     * 
 	 * @param $number 所要获取的记录条数
 	 */
 	public function limit($number)
@@ -266,6 +326,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 分页查询
+     * 
 	 * @param $page           
 	 * @param $page_number
 	 */
@@ -280,6 +341,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 添加分组查询条件
+     * 
 	 * @param $spec 分组字段  
 	 */
 	public function group($spec)
@@ -294,6 +356,7 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 设置排序条件
+     * 
 	 * @param $spec 排序字段  
 	 */
 	public function order($spec)
@@ -315,17 +378,19 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 查询
-	 * @param unknown $sql
+     * 
+	 * @param string $sql
 	 * @return string
 	 */
 	protected function renderSelect($sql)
 	{
-		return $sql = self::SQL_SELET;
+		return $sql = self::SQL_SELECT;
 	}
 	
 	/**
 	 * 查询字段
-	 * @param unknown $sql
+     * 
+	 * @param sring $sql
 	 * @return string
 	 */
 	protected function renderColumns($sql)
@@ -335,7 +400,8 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 	
 	/**
 	 * 查询添加form
-	 * @param unknown $sql
+     * 
+	 * @param string $sql
 	 * @return string
 	 */
 	protected function renderFrom($sql)
@@ -344,6 +410,12 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $sql .= empty($this->_alias) ? '`'.$this->_table.'`' : '`'.$this->_table . '` `' . $this->_alias.'`';
 	}
 	
+    /**
+     * 查询添加join
+     * 
+     * @param string $sql
+     * @return string
+     */
 	protected function renderJoin($sql)
 	{
 		if (!empty($this->_join) && is_array($this->_join))
@@ -356,6 +428,12 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $sql;
 	}
 	
+    /**
+     * 查询添加where条件
+     * 
+     * @param string $sql
+     * @return type
+     */
 	protected function renderWhere($sql)
 	{
 		if (!empty($this->_where) && is_array($this->_where))
@@ -366,6 +444,12 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $sql;
 	}
 	
+    /**
+     * 查询添加group条件
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderGroup($sql)
 	{
 		if (!empty($this->_group_by) && is_array($this->_group_by))
@@ -377,6 +461,12 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $sql;
 	}
 	
+    /**
+     * 查询添加having条件
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderHaving($sql)
 	{
 		if (!empty($this->_having) && is_array($this->_having))
@@ -387,6 +477,12 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return $sql;
 	}
 	
+    /**
+     * 查询添加order排序
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderOrder($sql)
 	{
 		if (!empty($this->_order_by) && is_array($this->_order_by))
@@ -397,6 +493,12 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return  $sql;
 	}
 	
+    /**
+     * 查询添加限制条数
+     * 
+     * @param type $sql
+     * @return type
+     */
 	protected function renderLimit($sql)
 	{
 		if (!empty($this->_limit) || !empty($this->_limit_page))
@@ -425,6 +527,11 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		return chop($sql);
 	}
 	
+    /**
+     * 返回SQL语句
+     * 
+     * @return type
+     */
 	public function __toString()
 	{
 		try {

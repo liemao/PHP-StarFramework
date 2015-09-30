@@ -43,9 +43,13 @@ class Star_Cache_Memcache implements Star_Cache_Interface {
 	}
 	
 	/**
-	 * 添加memcache缓存项
-	 * @see Star_Cache_Interface::add()
-	 */
+     * 添加缓存
+     * 
+     * @param string $key
+     * @param string|array $value
+     * @param int $lefttime
+     * @return bool
+     */
 	public function add($key, $value, $lefttime = 0)
 	{
 		if ($lefttime == 0)
@@ -58,18 +62,24 @@ class Star_Cache_Memcache implements Star_Cache_Interface {
 	}
 	
 	/**
-	 * 获取memcache缓存项
-	 * @see Star_Cache_Interface::get()
-	 */
+     * 获取缓存
+     * 
+     * @param string $key
+     * @return type
+     */
 	public function get($key)
 	{
 		return $this->memcache->get($key);
 	}
 	
 	/**
-	 * 添加memcache缓存项
-	 * @see Star_Cache_Interface::set()
-	 */
+     * 设置缓存
+     * 
+     * @param string $key
+     * @param string|array $value
+     * @param int $lefttime
+     * @return type
+     */
 	public function set($key, $value, $lefttime = 0)
 	{
 		if ($lefttime == 0)
@@ -82,9 +92,11 @@ class Star_Cache_Memcache implements Star_Cache_Interface {
 	}
 	
 	/**
-	 * 销毁memcache缓存项
-	 * @see Star_Cache_Interface::delete()
-	 */
+     * 删除缓存
+     * 
+     * @param string $key
+     * @return type
+     */
 	public function delete($key)
 	{
 		return $this->memcache->delete($key);

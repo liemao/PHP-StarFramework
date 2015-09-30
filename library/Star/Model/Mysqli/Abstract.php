@@ -30,6 +30,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
     /**
      * 构造方法
+     * 
      * @param unknown $config
      */
 	public function __construct($config)
@@ -39,6 +40,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
     
 	/**
 	 * 初始化
+     * 
 	 * @param array $config
 	 */
     protected function init($config)
@@ -58,6 +60,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 
     /**
      * 连接mysql数据库
+     * 
      * @param type $db
      * @throws Star_Exception
      */
@@ -90,6 +93,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
 	/**
      * 插入数据
+     * 
      * @param type $table
      * @param array $data
      * @return int 插入数据的自增ID
@@ -106,6 +110,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
     /**
      * 更新数据
+     * 
      * @param type $table
      * @param type $where
      * @param array $data
@@ -128,6 +133,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
 	/**
 	 * 删除数据
+     * 
      * @param $table
 	 * @param $where
      * @return int 影响行数
@@ -205,6 +211,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
 	/**
      * 返回结果集第一个字段
+     * 
      * @param Star_Model_Mysqli_Select $where
      * @param type $conditions
      * @param type $table
@@ -231,10 +238,12 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
 	/**
      * 返回一行结果集
+     * 
      * @param Star_Model_Mysqli_Select $where
      * @param type $conditions
      * @param type $table
-     * @return array $result
+     * @param type $order
+     * @return type
      */
 	public function fetchRow($where, $conditions = null , $table = null, $order = null)
 	{
@@ -255,10 +264,14 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
     /**
      * 返回第一个查询字段集合
+     * 
      * @param Star_Model_Mysqli_Select $where
      * @param type $conditions
      * @param type $table
-     * @return array
+     * @param type $order
+     * @param type $page
+     * @param type $page_size
+     * @return type
      */
 	public function fetchCol($where, $conditions = null , $table = null, $order = null, $page = null, $page_size = null)
 	{
@@ -284,6 +297,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
     
     /**
      * 执行sql
+     * 
      * @param type $sql
      * @return result
      */
@@ -325,6 +339,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 
     /**
 	 * 返回影响行数
+     * 
      * @return int affected_rows
 	 */
 	public function rowCount()
@@ -334,6 +349,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
 	/**
 	 * sql query
+     * 
 	 * @param $sql
      * @return $resource
 	 */
@@ -369,6 +385,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
     
     /**
      * 返回select对象
+     * 
      * @return \Star_Model_Mysqli_Select
      */
     public function select()
@@ -437,6 +454,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
 	/**
 	 * 提交事务
+     * 
 	 * @return boolean
 	 */
 	public function commit()
@@ -446,6 +464,7 @@ class Star_Model_Mysqli_Abstract implements Star_Model_Interface
 	
 	/**
 	 * mysql操作回滚
+     * 
 	 * @return boolean
 	 */
 	public function rollback()

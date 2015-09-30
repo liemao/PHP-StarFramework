@@ -13,13 +13,15 @@
 Class Star_Model_Api
 {    
     protected $server_name = '';
+    
+    protected static $config = array();
 
     public function __construct($options = array()) {
         
         if ($options)
         {
             $this->setOptions(($options));
-        }
+        } 
     }
     
     /**
@@ -51,9 +53,10 @@ Class Star_Model_Api
      * @param type $method
      * @param type $cookie
      * @param type $protocol
+     * @param int $timeout
      * @return type 
      */
-    public function api($script_name, $params, $method = 'get', $cookie = array(), $protocol = 'http', $timeout = 30)
+    public function api($script_name, $params, $method = 'get', $cookie = '', $protocol = 'http', $timeout = 3)
     {
         $query_string = $this->getQueryString($params);
         $cookie_string = $this->getCookieString($cookie);
@@ -130,16 +133,12 @@ Class Star_Model_Api
      */
     protected function getQueryString($params)
     {
-        if (is_string($params))
-			return $params;
-			
-		$query_string = array();
-	    foreach ((array) $params as $key => $value)
-	    {   
-	        array_push($query_string, rawurlencode($key) . '=' . rawurlencode($value));
-	    }   
-	    $query_string = join('&', $query_string);
-	    return $query_string;
+        if (is_array($params))
+        {
+            return http_build_query($params);
+        }
+
+		return $params;
     }
     
     /**
@@ -150,16 +149,21 @@ Class Star_Model_Api
      */
     protected function getCookieString($params)
     {
-        if (is_string($params))
-			return $params;
-			
-		$cookie_string = array();
-	    foreach ($params as $key => $value)
-	    {   
-	        array_push($cookie_string, $key . '=' . $value);
-	    }   
-	    $cookie_string = join('; ', $cookie_string);
-	    return $cookie_string;
+        if (is_array($params))
+        {
+            return http_build_cookie($params);
+        }
+		return $params;
+    }
+    
+    /**
+     * 设置config
+     * 
+     * @param array $config
+     */
+    public static function setting($config)
+    {
+        self::$config = $config;
     }
 
     /**
@@ -179,9 +183,10 @@ Class Star_Model_Api
      */
     public function getServerName()
     {
-        if (empty($this->server_name))
+        $config = self::$config;
+        if (empty($this->server_name) && isset($config['server_name']))
         {
-            $this->server_name = Star_Config::get('resources.api.server_name');
+            $this->server_name = $config['server_name'];
         }
 
         return $this->server_name;

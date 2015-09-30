@@ -18,27 +18,50 @@ abstract class Star_Http_Abstract
 	
 	protected $action_name = '';
 
-
+    /**
+     * 构造函数
+     */
     public function __construct()
 	{
 		
 	}
     
+    /**
+     * 返回模块名称
+     * 
+     * @return stirng
+     */
     public function getModuleName()
     {
         return $this->module_name;
     }
     
+    /**
+     * 返回控制器名称
+     * 
+     * @return string
+     */
     public function getControllerName()
     {
         return $this->controller_name;
     }
     
+    /**
+     * 返回action名称
+     * 
+     * @return string
+     */
     public function getActionName()
     {
         return $this->action_name;
     }
 
+    /**
+     * 设置模块名
+     * 
+     * @param string $module
+     * @return \Star_Http_Abstract
+     */
     public function setModuleName($module)
     {
         $this->module_name = $module;
@@ -48,7 +71,8 @@ abstract class Star_Http_Abstract
     /**
      * 设置当前controller
      * 
-     * @param type $controller_name 
+     * @param string $controller_name
+     * @return \Star_Http_Abstract
      */
 	public function setControllerName($controller_name)
 	{
@@ -59,7 +83,8 @@ abstract class Star_Http_Abstract
     /**
      * 设置当前action
      * 
-     * @param type $action_name 
+     * @param string $action_name
+     * @return \Star_Http_Abstract
      */
 	public function setActionName($action_name)
 	{

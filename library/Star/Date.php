@@ -27,13 +27,13 @@ class Star_Date {
      * 日期转换为时间戳
      * 
      * @param type $date
-     * @param type $is_first
+     * @param type $is_begin
      * @return type 
      */
-    public static function dateToTime($date, $is_first = true)
+    public static function dateToTime($date, $is_begin = true)
     {
         list($year, $month, $day) = explode('-', $date);
-        return $is_first == true ? mktime(0, 0, 0, $month, $day, $year) : mktime(23, 59, 59, (int) $month, (int) $day, (int) $year);
+        return $is_begin == true ? mktime(0, 0, 0, $month, $day, $year) : mktime(23, 59, 59, (int) $month, (int) $day, (int) $year);
     }
     
     /**
@@ -93,16 +93,16 @@ class Star_Date {
     /**
      * 返回上周起始时间戳
      * 
-     * @param type $is_first
+     * @param type $is_begin
      * @return type 
      */
-    public static function getLastWeek($is_first = true)
+    public static function getLastWeek($is_begin = true)
     {
         $now_time = time();
         $week = date('w', $now_time); //星期几
         list($year, $month, $day) = explode('-', date('Y-m-d', $now_time - ($week + 7 - 1) * 86400));
         $time = mktime(0, 0, 0, $month, $day, $year);
-        if ($is_first == false)
+        if ($is_begin == false)
         {
             $time += 7 * 86400 - 1;
         }
@@ -112,15 +112,15 @@ class Star_Date {
     /**
      * 返回上月起始时间戳
      * 
-     * @param type $is_first
+     * @param type $is_begin
      * @return type 
      */
-    public static function getLastMonth($is_first = true)
+    public static function getLastMonth($is_begin = true)
     {
         $now_time = time();
         list($year, $month) = explode('-', date('Y-m', ($now_time - ((date('d', $now_time) + 1) * 86400)))); //返回上个月年月
 
-        if ($is_first == true)
+        if ($is_begin == true)
         {
             $time = mktime(0, 0, 0, $month, 1, $year);
         } else {
@@ -134,14 +134,14 @@ class Star_Date {
     /**
      * 返回昨天起始时间戳
      * 
-     * @param type $is_first
+     * @param type $is_begin
      * @return type 
      */
-    public static function getLastDay($is_first = true)
+    public static function getLastDay($is_begin = true)
     {
         list($year, $month , $day) = explode('-', date('Y-m-d', (time() - 86400)));
         
-        if ($is_first == true)
+        if ($is_begin == true)
         {
             $time = mktime(0, 0, 0, $month, $day, $year);
         } else {

@@ -32,6 +32,11 @@ class Star_Layout {
     
     public $content = null;
 	
+    /**
+     * 构造函数
+     * 
+     * @param type $options
+     */
 	public function __construct($options = array())
 	{
 		if (!empty($options))
@@ -57,6 +62,11 @@ class Star_Layout {
 		return self::$mvc_instance;
 	}
 	
+    /**
+     * 返回布局实例
+     * 
+     * @return type
+     */
 	public static function getMvcInstance()
 	{
 		return self::$mvc_instance;
@@ -122,36 +132,72 @@ class Star_Layout {
         }
 	}
 	
+    /**
+     * 设置脚本路径
+     * 
+     * @param type $script_path
+     */
 	public function setScriptPath($script_path)
 	{
 		$this->layout_script_path = $script_path;
 	}
 	
+    /**
+     * 设置基础路径
+     * 
+     * @param type $base_path
+     */
 	public function setBasePath($base_path)
 	{
 		$this->layout_base_path = $base_path;
 	}
 	
+    /**
+     * 设置layout
+     * 
+     * @param type $layout
+     */
 	public function setLayout($layout)
 	{
 		$this->layout = $layout;
 	}
 	
+    /**
+     * 返回layout
+     * 
+     * @return type
+     */
 	public function getLayout()
 	{
 		return $this->layout;
 	}
 	
+    /**
+     * 返回基础路径
+     * 
+     * @return type
+     */
 	public function getBasePath()
 	{
 		return $this->layout_base_path;
 	}
 	
+    /**
+     * 返回脚本路径
+     * 
+     * @return type
+     */
 	public function getScriptPath()
 	{
 		return $this->layout_script_path;
 	}
 	
+    /**
+     * 设置view
+     * 
+     * @param Star_View $view
+     * @return \Star_Layout
+     */
 	public function setView(Star_View $view)
 	{
 		$this->view = $view;
@@ -159,6 +205,11 @@ class Star_Layout {
 		return $this;
 	}
 	
+    /**
+     * render
+     * 
+     * @throws Star_Exception
+     */
 	public function render()
 	{
         if ($this->view instanceof Star_View)
@@ -174,6 +225,13 @@ class Star_Layout {
         }
 	}
 	
+    /**
+     * 变量赋值
+     * 
+     * @param type $specs
+     * @param type $value
+     * @return \Star_Layout
+     */
 	public function assign($specs, $value = null)
 	{
 		if (is_string($specs))
@@ -192,11 +250,22 @@ class Star_Layout {
 		return $this;
 	}
 	
+    /**
+     *  返回内容key
+     * 
+     * @return type
+     */
 	public function getContentKey()
 	{
 		return $this->content_key;
 	}
 	
+    /**
+     * 设置内容key
+     * 
+     * @param type $content_key
+     * @return \Star_Layout
+     */
 	public function setContentKey($content_key)
 	{
 		if (!empty($content_key))

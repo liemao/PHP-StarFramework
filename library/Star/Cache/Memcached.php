@@ -45,7 +45,8 @@ class Star_Cache_Memcached implements Star_Cache_Interface {
 	
 	/**
 	 * 根据key所在服务器映射出该服务器信息
-	 * @param unknown $key
+     * 
+	 * @param int $key
 	 */
 	protected function getServerByKey($key)
 	{
@@ -53,9 +54,13 @@ class Star_Cache_Memcached implements Star_Cache_Interface {
 	}
 	
 	/**
-	 * 添加memcached缓存项
-	 * @see Star_Cache_Interface::add()
-	 */
+     * 添加缓存
+     * 
+     * @param string $key
+     * @param string|array $value
+     * @param int $lefttime
+     * @return bool
+     */
 	public function add($key, $value, $lefttime = 0)
 	{
 		if ($lefttime == 0)
@@ -68,18 +73,24 @@ class Star_Cache_Memcached implements Star_Cache_Interface {
 	}
 	
 	/**
-	 * 获取memcached缓存项
-	 * @see Star_Cache_Interface::get()
-	 */
+     * 获取缓存
+     * 
+     * @param string $key
+     * @return type
+     */
 	public function get($key)
 	{
 		return $this->memcached->get($key);
 	}
 	
 	/**
-	 * 添加memcached缓存项
-	 * @see Star_Cache_Interface::set()
-	 */
+     * 设置缓存
+     * 
+     * @param string $key
+     * @param string|array $value
+     * @param int $lefttime
+     * @return type
+     */
 	public function set($key, $value, $lefttime = 0)
 	{
 		if ($lefttime == 0)
@@ -92,20 +103,22 @@ class Star_Cache_Memcached implements Star_Cache_Interface {
 	}
 	
 	/**
-	 * 销毁memcached缓存项
-	 * @see Star_Cache_Interface::delete()
-	 */
+     * 删除缓存
+     * 
+     * @param string $key
+     * @return type
+     */
 	public function delete($key)
 	{
 		return $this->memcached->delete($key);
 	}
 	
 	/**
-	 * 
+	 * 关闭缓存
 	 */
     public function colse()
     {
-      
+         $this->memcached = null;
     }
 }
 

@@ -28,6 +28,11 @@ abstract class Star_Model_Abstract
 	
 	protected $_support_db = array('mysqli' => 'Mysqli', 'mysql' => 'Mysql', 'pdo_mysql' => 'Pdo_Mysql');
 	
+    /**
+     * 构造函数
+     * 
+     * @param type $config
+     */
 	public function __construct($config = array())
 	{
 		if (is_string($config))
@@ -43,6 +48,9 @@ abstract class Star_Model_Abstract
 		//$this->_setup();
 	}
 	
+    /**
+     * 设置
+     */
 	private function _setup()
 	{
 		$this->setAdapter($this->getSlaveDbOption());
@@ -60,6 +68,7 @@ abstract class Star_Model_Abstract
     
     /**
      * 设置表前缀
+     * 
      * @param $prefix
      * @return \Star_Model_Abstract 
      */
@@ -152,6 +161,7 @@ abstract class Star_Model_Abstract
 	
     /**
      * 执行SQL
+     * 
      * @param type $sql
      * @return type
      */
@@ -179,7 +189,8 @@ abstract class Star_Model_Abstract
     }
 	
     /**
-     *
+     * 返回第一个查询字段
+     * 
      * @param type $where
      * @param null $conditions
      * @param null $order
@@ -192,7 +203,8 @@ abstract class Star_Model_Abstract
 	}
 	
     /**
-     *
+     * 返回结果集
+     * 
      * @param type $where
      * @param null $conditions
      * @param null $order
@@ -207,7 +219,8 @@ abstract class Star_Model_Abstract
 	}
 	
     /**
-     *
+     * 返回一行结果集
+     * 
      * @param type $where
      * @param $conditions
      * @param string $order
@@ -220,6 +233,7 @@ abstract class Star_Model_Abstract
 	}
 	
     /**
+     * 返回第一个查询字段集合
      * 
      * @param type $where
      * @param string $conditions
@@ -234,6 +248,11 @@ abstract class Star_Model_Abstract
 		return $this->getAdapter()->fetchCol($where, $conditions, $table, $order, $page, $page_size);
 	}
 	
+    /**
+     * 返回查询构造器
+     * 
+     * @return type
+     */
 	public function select()
 	{ 
 		return $this->getAdapter()->select();
@@ -295,6 +314,7 @@ abstract class Star_Model_Abstract
 	
     /**
      * 设置适配器
+     * 
      * @param type $db
      * @return $db
      */
@@ -310,6 +330,7 @@ abstract class Star_Model_Abstract
 	
     /**
      * 返回适配器
+     * 
      * @return type
      */
 	public function getAdapter()
@@ -324,6 +345,7 @@ abstract class Star_Model_Abstract
 	
     /**
      * 设置参数
+     * 
      * @param array $options
      */
 	public function setOptions(Array $options)
@@ -346,6 +368,7 @@ abstract class Star_Model_Abstract
 	
     /**
      * 配置
+     * 
      * @param type $db
      */
 	public static function setting($db)
@@ -361,6 +384,7 @@ abstract class Star_Model_Abstract
 	
     /**
      * 返回默认适配器
+     * 
      * @return type
      */
 	public function getDefaultAdapter()
@@ -421,6 +445,12 @@ abstract class Star_Model_Abstract
     	return $arr;
     }
     
+    /**
+     * 设置where条件
+     * 
+     * @param type $where
+     * @return string
+     */
     private function setWhere($where)
     {
     	if (is_numeric($where))
@@ -446,6 +476,7 @@ abstract class Star_Model_Abstract
     
     /**
 	 * mysql操作回滚
+     * 
 	 * @return boolean
 	 */
 	public function rollback()
@@ -455,6 +486,7 @@ abstract class Star_Model_Abstract
     
     /**
 	 * 提交事务
+     * 
 	 * @return boolean
 	 */
 	public function commit()

@@ -18,7 +18,8 @@ require 'Star/Http/Abstract.php';
 class Star_Http_Request extends Star_Http_Abstract
 {
     protected $params = array();
-    
+    protected $path_info = '';
+
     /**
      * 构造方法
      */
@@ -51,32 +52,40 @@ class Star_Http_Request extends Star_Http_Abstract
 	
 	/**
 	 * 获取request的访问路径
-	 * @return Ambigous <string, unknown, mixed>
+     * 
+	 * @return string
 	 */
 	public function getPathInfo()
 	{
+        if ($this->path_info)
+        {
+            return $this->path_info;
+        }
+        
 		$path = '';
-		
+
 		if (isset($_SERVER['REDIRECT_URL']) && $_SERVER['REDIRECT_URL']) //是否重定向
 		{
 			$path = $_SERVER['REDIRECT_URL'];
             if ($_SERVER['DOCUMENT_ROOT'] != dirname($_SERVER['SCRIPT_FILENAME'])) 
             {
-                $path = str_replace(str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($_SERVER['SCRIPT_FILENAME'])) , '', $path); //去除目录路径
+                $path = str_replace(str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']) , '', $path); //去除目录路径
             }
             
 		} else if ($_SERVER['REQUEST_URI'])
 		{
-            $url_info = parse_url($_SERVER['REQUEST_URI']);
+            $url_info = parse_url(ltrim($_SERVER['REQUEST_URI'], '\\/'));
             if ($_SERVER['PHP_SELF'] == $url_info['path'])
             {
                 $path = str_replace($_SERVER['SCRIPT_NAME'], '', $url_info['path']);
             } else {
-                $path = str_replace(str_replace($_SERVER['DOCUMENT_ROOT'], '', dirname($_SERVER['SCRIPT_FILENAME'])) , '', $url_info['path']); //去除目录路径
+                $file_path = ltrim(str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']), '\\/');
+                $path = str_replace($file_path, '', $url_info['path']); //去除目录路径
             }
-            $path = ltrim($path, '\\/');
+            $path = trim($path, '\\/');
 		}
-		return $path;
+        $this->path_info = $path;
+		return $this->path_info;
 		
 	}
     
@@ -136,12 +145,13 @@ class Star_Http_Request extends Star_Http_Abstract
     /**
      * 通过key返回参数
      * 
-     * @param type $key
+     * @param  $key
+     * @param  $default 默认值
      * @return type 
      */
-	public function getParam($key)
+	public function getParam($key, $default = '')
 	{
-		return isset($this->params[$key]) ? $this->params[$key] : '';
+		return isset($this->params[$key]) ? $this->params[$key] : $default;
 	}
 	
     /**
@@ -206,7 +216,7 @@ class Star_Http_Request extends Star_Http_Abstract
      * 
      * @return type 
      */
-    public static function getHttpAgent()
+    public static function getUserAgent()
     {
         return $_SERVER['HTTP_USER_AGENT'];
     }

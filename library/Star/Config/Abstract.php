@@ -19,6 +19,12 @@ Abstract class Star_Config_Abstract {
 	
 	protected $environment;
 	
+    /**
+     * 构造函数
+     * 
+     * @param string $file_name
+     * @param string $environment
+     */
 	public function __construct($file_name, $environment = '')
 	{
 		$this->file_name = $file_name;

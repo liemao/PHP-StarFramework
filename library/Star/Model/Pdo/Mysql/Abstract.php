@@ -30,7 +30,8 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	
     /**
      * 构造方法
-     * @param unknown $config
+     * 
+     * @param $config
      */
 	public function __construct($config)
 	{
@@ -39,7 +40,8 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
     
 	/**
 	 * 初始化
-	 * @param unknown $config
+     * 
+	 * @param $config
 	 */
     protected function init($config)
     {
@@ -58,6 +60,7 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 
     /**
      * 连接mysql数据库
+     * 
      * @see Star_Model_Interface::connect()
      */
     public function connect($db)
@@ -90,7 +93,9 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	
 	/**
 	 * 插入数据
+     * 
 	 * @param $data
+     * @return int 插入ID
 	 */
 	public function insert($table, Array $data)
 	{
@@ -104,11 +109,14 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	}
 	
 	/**
-	 * 更新数据
-	 *
-	 * @param $where
-	 * @param $data
-	 */
+     * 更新数据
+     * 
+     * @param type $table
+     * @param type $where
+     * @param array $data
+     * @param type $quote_indentifier
+     * @return type
+     */
 	public function update($table, $where, Array $data, $quote_indentifier = true)
 	{
 		$params = array();
@@ -128,9 +136,12 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	}
 	
 	/**
-	 * 删除数据
-	 * @param $where
-	 */
+     * 删除数据
+     * 
+     * @param type $table
+     * @param type $where
+     * @return type
+     */
 	public function delete($table, $where)
 	{
 		$sql = 'DELETE FROM ' . $table . ' WHERE ' . $where;
@@ -169,9 +180,16 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 
 
     /**
-	 * 返回结果集
-	 * @param $select
-	 */
+     * 返回结果集
+     * 
+     * @param type $where
+     * @param type $conditions
+     * @param type $table
+     * @param type $order
+     * @param type $page
+     * @param type $page_size
+     * @return type
+     */
 	public function fetchAll($where, $conditions = null, $table = null, $order = null, $page = null, $page_size = null)
 	{
 		$stmt = $this->_fetch($where, $conditions, $table, $order, $page, $page_size);
@@ -179,9 +197,14 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	}
 	
 	/**
-	 * 返回结果
-	 * @param $id
-	 */
+     * 返回结果集第一个字段
+     * 
+     * @param Star_Model_Pdo_Mysql_Select $where
+     * @param type $conditions
+     * @param type $table
+     * @param type $order
+     * @return type
+     */
 	public function fetchOne($where, $conditions = null, $table = null, $order = null)
 	{
 		if ($where instanceof Star_Model_Pdo_Mysql_Select)
@@ -194,9 +217,14 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	}
 	
 	/**
-	 * 返回一行结果集
-	 * @param $select
-	 */
+     * 返回一行结果集
+     * 
+     * @param Star_Model_Pdo_Mysql_Select $where
+     * @param type $conditions
+     * @param type $table
+     * @param type $order
+     * @return type
+     */
 	public function fetchRow($where, $conditions = null , $table = null, $order = null)
 	{
 		if ($where instanceof Star_Model_Pdo_Mysql_Select)
@@ -207,6 +235,17 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
 	
+    /**
+     * 返回第一个查询字段集合
+     * 
+     * @param type $where
+     * @param type $conditions
+     * @param type $table
+     * @param type $order
+     * @param type $page
+     * @param type $page_size
+     * @return type
+     */
 	public function fetchCol($where, $conditions = null , $table = null, $order = null, $page = null, $page_size = null)
 	{  
 		$stmt = $this->_fetch($where, $conditions, $table, $order, $page, $page_size);
@@ -218,6 +257,12 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 		return $data;
 	}
     
+    /**
+     * 执行SQL
+     * 
+     * @param type $sql
+     * @return type
+     */
     public function query($sql)
     {
         $stmt = $this->_query($sql);
@@ -255,6 +300,17 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 		return $this->db->affected_rows;
 	}
 	
+    /**
+     * 返回查询资源
+     * 
+     * @param Star_Model_Pdo_Mysql_Select $where
+     * @param type $conditions
+     * @param type $table
+     * @param type $order
+     * @param type $page
+     * @param type $page_size
+     * @return type
+     */
     public function _fetch($where, $conditions = null, $table = null, $order = null, $page = null, $page_size = null)
     {
         if ($where instanceof Star_Model_Pdo_Mysql_Select)
@@ -272,6 +328,7 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
     
 	/**
 	 * sql query
+     * 
 	 * @param $sql
 	 */
 	public function _query($sql, $params = array())
@@ -339,11 +396,19 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
         return $sql;
     }
     
+    /**
+     * 返回查询构造器
+     * 
+     * @return \Star_Model_Pdo_Mysql_Select
+     */
     public function select()
 	{
 		return new Star_Model_Pdo_Mysql_Select();
 	}
 	
+    /**
+     * 关闭数据库
+     */
 	public function close()
 	{
 		$this->db = null;
@@ -385,6 +450,7 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	
     /**
      * 数据去除反斜杠
+     * 
      * @param type $data
      * @return $data
      */

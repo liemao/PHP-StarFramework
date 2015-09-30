@@ -30,9 +30,10 @@ abstract class Star_Exception_Abstract extends Exception {
 	}
 	
 	/**
-	 * 
-	 * @param unknown $method
-	 * @param unknown $args
+	 * 魔法方法call
+     * 
+	 * @param string $method
+	 * @param array $args
 	 * @return NULL
 	 */
 	public function __call($method, $args)

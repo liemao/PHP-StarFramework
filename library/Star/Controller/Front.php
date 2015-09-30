@@ -13,12 +13,14 @@
  * @author zhangqinyang
  */
 require 'Star/Controller/Action.php';
+require 'Star/Controller/Router/Route/Module.php';
 class Star_Controller_Front{
 
     protected $debug = false; //默认关闭
     protected $request; //Star_Http_Request
 	protected $response; //Star_Http_Response
     protected $view; //Star_View
+    protected $routes = array();
     protected $controller_directory; //controller目录
     protected $module_valid = false; //是否配置module
     protected $defualt_module = 'default'; //默认module
@@ -31,14 +33,19 @@ class Star_Controller_Front{
     protected $controller_key = 'controller';
     protected $action_key = 'action';
     protected $url_delimiter = '/';
-    	
+    
+    /**
+     * 构造函数
+     * 
+     * @param Star_Http_Request $request
+     * @param Star_Http_Response $response
+     * @param type $options
+     */
 	public function __construct(Star_Http_Request $request, Star_Http_Response $response, $options = array())
 	{
 		$this->request = $request;
         $this->response = $response;
         $this->setOptions($options);
-        $params = $this->route();
-        $this->setRequestParam($params);
 	}
     
     /**
@@ -81,8 +88,8 @@ class Star_Controller_Front{
     /**
      * module是否存在
      * 
-     * @param type $module
-     * @return boolean 
+     * @param string $module
+     * @return bool
      */
     public function isValidModule($module)
     {
@@ -103,8 +110,8 @@ class Star_Controller_Front{
     /**
      * 添加 module controller路径
      * 
-     * @param type $directory
-     * @param type $module
+     * @param string $directory
+     * @param string $module
      * @return type 
      */
     public function addModuleControllerDirectory($directory, $module)
@@ -119,7 +126,7 @@ class Star_Controller_Front{
     /**
      * 设置module路径
      * 
-     * @param type $directory
+     * @param string $path
      * @return \Star_Controller_Front 
      */
     public function setModuleDirectory($path)
@@ -161,7 +168,7 @@ class Star_Controller_Front{
     }
     
     /**
-     * 返回module controller d
+     * 返回module controller
      * 
      * @return type 
      */
@@ -295,7 +302,7 @@ class Star_Controller_Front{
         header('Cache-Control: no-cache');
 		header('Content-Type: text/html; charset=' . $this->view->getEncoding());
 		ob_start();
-        
+
         try{
             $class_name = $this->getControllerClass($this->request);
             $this->loadClass($class_name);
@@ -325,6 +332,12 @@ class Star_Controller_Front{
 		ob_end_flush();
 	}
     
+    /**
+     * 加载controller
+     * 
+     * @param string $controller
+     * @throws Star_Exception
+     */
     public function loadClass($controller)
     {
         $file_path = Star_Loader::getFilePath(array($this->getControllerDirectory(), $controller));
@@ -437,56 +450,83 @@ class Star_Controller_Front{
     {
         return $this->debug;
     }
+    
+    /**
+     * 添加路由
+     * 
+     * @param string $name 路由名称
+     * @param Star_Controller_Router_Route_Abstract $route
+     * @return \Star_Controller_Front
+     */
+    public function addRouter($name, Star_Controller_Router_Route_Abstract $route)
+    {
+        $this->routes[$name] = $route;
+        return $this;
+    }
 
     /**
      * 路由
      * 
      * @param type $url 
      */
-	protected function route()
+	public function route()
 	{
-        $path = $this->request->getPathInfo();
-        $path = str_replace('\\', '/', $path);
-        $path = ltrim($path, '/');
-        $params = array();
-		if (!empty($path))
+        $path_info = $this->request->getPathInfo();
+        $params = false;
+        if (!empty($this->routes))
+        {
+            foreach ($this->routes as $route)
+            {
+                if (($params = $route->match($path_info)) !== false)
+                {
+                    break;
+                }
+            }
+        }
+        
+        if ($params === false)
+        {
+            $params = explode($this->url_delimiter, $path_info);
+        }
+        
+		if (!empty($params))
 		{	
-            $value = array();
-			$path = explode($this->url_delimiter, $path);
-			if (!empty($path))
+            $values = array();
+			if (!empty($params))
 			{
-                if ($this->isValidModule($path[0]))
+                if ($this->isValidModule($params[0]))
                 {
-                    $module_name = array_shift($path);
-                    $value[$this->module_key] = $module_name;
+                    $module_name = array_shift($params);
+                    $values[$this->module_key] = $module_name;
                 }
                 
-                if (count($path) && !empty($path[0]))
+                if (count($params) && !empty($params[0]))
                 {
-                    $controller_name = array_shift($path);
-                    $value[$this->controller_key] = $controller_name;
+                    $controller_name = array_shift($params);
+                    $values[$this->controller_key] = $controller_name;
                 }
                 
-                 if (count($path) && !empty($path[0]))
+                 if (count($params) && !empty($params[0]))
                 {
-                    $action_name = array_shift($path);
-                    $value[$this->action_key] = $action_name;
+                    $action_name = array_shift($params);
+                    $values[$this->action_key] = $action_name;
                 }
                 
-				if (!empty($path))
+				if (!empty($params))
                 {
-                    $count = count($path);
+                    $count = count($params);
                     for ($i =0; $i<$count; $i = $i+2)
                     {
-                        $params[$path[$i]] = isset($path[$i+1]) ? $path[$i+1] : '';
+                        $values[$params[$i]] = isset($params[$i+1]) ? $params[$i+1] : '';
                     }
                 }
-                $params = $value + $params;
+                $params = $values;
 			}
 		}
-        return $params;
+        $this->setRequestParam($params);
+        return $this;
 	}
-    
+
     /**
      * 设置request params
      * 

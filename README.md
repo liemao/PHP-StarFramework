@@ -141,7 +141,7 @@ class IndexController extends Star_Controller_Action
 ```
 
 #view script
-The view script for default controller and default action is in the application/views/scripts/index/index.phtml, Yaf provides a simple view engineer called "Star_View", which supported the view template written by PHP.
+The view script for default controller and default action is in the application/views/scripts/index/index.phtml, SF provides a simple view engineer called "Star_View", which supported the view template written by PHP.
 ```php
 <html>
  <head>

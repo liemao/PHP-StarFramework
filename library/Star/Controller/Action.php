@@ -29,7 +29,13 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
     
     protected static $_warning_script = 'warning';
 
-
+    /**
+     * 构造函数
+     * 
+     * @param Star_Http_Request $request
+     * @param Star_Http_Response $response
+     * @param Star_View $view
+     */
     final public function __construct(Star_Http_Request $request, Star_Http_Response $response, Star_View $view)
 	{
 		$this->setRequest($request)
@@ -43,6 +49,9 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 		$this->init();
 	}
 	
+    /**
+     * 初始化
+     */
 	public function init()
 	{
 		
@@ -72,10 +81,11 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
         return $this;
     }
 
-        /**
-	 * 呼叫控制器
-	 * @param unknown $method_name
-	 * @param unknown $args
+    /**
+	 * 魔法函数call
+     * 
+	 * @param string $method_name
+	 * @param array $args
 	 * @throws Star_Exception
 	 */
 	public function __call($method_name, $args)
@@ -88,6 +98,9 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 		throw new Star_Exception(__CLASS__ . '::' . $method_name . ' Method not exists', 500);
 	}
 	
+    /**
+     * 执行
+     */
 	public function run()
 	{
 
@@ -105,6 +118,12 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 		return $this;
 	}
     
+    /**
+     * 设置FrontController
+     * 
+     * @param Star_Controller_Front $front_contorller
+     * @return \Star_Controller_Action
+     */
     public function setFrontController(Star_Controller_Front $front_contorller)
     {
         $this->front_controller = $front_contorller;
@@ -113,9 +132,9 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 
 
     /**
-     * 执行 request action 请求
+     * 执行request action 请求
      * 
-     * @param type $action
+     * @param string $action
      */
     public function dispatch($action) 
     {
@@ -350,7 +369,7 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
     /**
      * 设置消息script
      * 
-     * @param type $script 
+     * @param string $script 
      */
     public static function setMessageScript($script)
     {
@@ -360,7 +379,7 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
     /**
      * 设置警告script
      * 
-     * @param type $script 
+     * @param string $script 
      */
     public static function setWarningScript($script)
     {

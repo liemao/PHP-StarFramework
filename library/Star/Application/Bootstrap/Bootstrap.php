@@ -55,6 +55,9 @@ class Star_Application_Bootstrap_Bootstrap extends Star_Application_Bootstrap_Ab
         }
 	}
     
+    /**
+     * 执行Application
+     */
     public function run()
     {
         $this->dispatch();

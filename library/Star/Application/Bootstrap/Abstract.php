@@ -19,6 +19,7 @@ abstract class Star_Application_Bootstrap_Abstract
 	protected $container = null;
     protected $view = null; //Star_View
     protected $request = null; //Star_Http_Request
+    protected $response = null; //Star_Http_Response
     public $front = null; //Star_Controller_Front
 
     /**
@@ -112,7 +113,8 @@ abstract class Star_Application_Bootstrap_Abstract
 	}
 	
 	/**
-	 * 
+	 * Application bootstrap
+     * 
 	 * @param string $resource
 	 * @return Star_Application_Bootstrap_Abstract
 	 */
@@ -146,7 +148,9 @@ abstract class Star_Application_Bootstrap_Abstract
      */
     public function dispatch()
     {
-        $this->front->setView($this->view)->dispatch();
+        $this->front->setView($this->view)
+             ->route()
+             ->dispatch();
     }
     
     /**
@@ -211,6 +215,17 @@ abstract class Star_Application_Bootstrap_Abstract
     public function setDb($options)
     {
         call_user_func(array('Star_Model_Abstract', 'setting'), $options);
+        return $this;
+    }
+    
+    /**
+     * 设置Api
+     * 
+     * @param $options
+     */
+    public function setApi($options)
+    {
+        call_user_func(array('Star_Model_Api', 'setting'), $options);
         return $this;
     }
     
