@@ -72,7 +72,7 @@ class Star_Http_Request extends Star_Http_Abstract
                 $path = str_replace(str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']) , '', $path); //去除目录路径
             }
             
-		} else if ($_SERVER['REQUEST_URI'])
+		} else if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'])
 		{
             $url_info = parse_url(ltrim($_SERVER['REQUEST_URI'], '\\/'));
             if ($_SERVER['PHP_SELF'] == $url_info['path'])
@@ -172,7 +172,7 @@ class Star_Http_Request extends Star_Http_Abstract
      */
 	protected function getMethod()
 	{
-		return $_SERVER['REQUEST_METHOD'];
+		return isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
 	}
 	
     /**
@@ -182,7 +182,7 @@ class Star_Http_Request extends Star_Http_Abstract
      */
 	public static function getHost()
 	{
-		return $_SERVER['HTTP_HOST'];
+		return isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 	}
     
     /**
@@ -196,7 +196,7 @@ class Star_Http_Request extends Star_Http_Abstract
                 $realip = $_SERVER["HTTP_X_FORWARDED_FOR"];
             } else if (isset($_SERVER["HTTP_CLIENT_IP"])) {
                 $realip = $_SERVER["HTTP_CLIENT_IP"];
-            } else {
+            } else if (isset ($_SERVER["REMOTE_ADDR"])){
                 $realip = $_SERVER["REMOTE_ADDR"];
             }
         } else {
@@ -218,7 +218,7 @@ class Star_Http_Request extends Star_Http_Abstract
      */
     public static function getUserAgent()
     {
-        return $_SERVER['HTTP_USER_AGENT'];
+        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     }
 }
 
