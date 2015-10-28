@@ -250,7 +250,7 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
 	{  
 		$stmt = $this->_fetch($where, $conditions, $table, $order, $page, $page_size);
         $data = array();
-		while ($rs = $stmt->fetch(PDO::FETCH_ASSOC))
+		while ($rs = $stmt->fetch(PDO::FETCH_NUM))
 		{
 			$data[] = $rs[0];
 		}

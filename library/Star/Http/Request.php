@@ -32,7 +32,7 @@ class Star_Http_Request extends Star_Http_Abstract
             $_POST = json_decode($request_body, true);
         }
 
-		$this->params = array_merge($_POST, $_GET);
+		$this->params = array_merge($_GET, $_POST);
 	}
 	
     /**
