@@ -138,8 +138,7 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
      */
     public function dispatch($action) 
     {
-        $class_methods = get_class_methods($this);
-        if (array_key_exists($action, array_flip($class_methods)))
+        if (method_exists($this, $action))
         {
             $this->$action();
             $this->view->loadView();

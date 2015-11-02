@@ -211,6 +211,18 @@ class Star_Application {
 		spl_autoload_register(array($star_autoload, 'autoload'));
 		return $this;
 	}
+    
+    /**
+     * 设置默认module_name
+     * 
+     * @param type $module_name
+     * @return \Star_Application
+     */
+    public function setDefaultModuleName($module_name)
+    {
+        $this->bootstrap->front->setDefaultModuleName($module_name);
+        return $this;
+    }
 
     /**
      * 设置默认controller_name

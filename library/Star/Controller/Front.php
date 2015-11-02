@@ -22,7 +22,7 @@ class Star_Controller_Front{
     protected $view; //Star_View
     protected $routes = array();
     protected $controller_directory; //controller目录
-    protected $module_valid = false; //是否配置module
+    protected $has_module = false; //是否配置module
     protected $defualt_module = 'default'; //默认module
     protected $module_controller_directoryectory_name = 'controllers'; //modules controller目录名
     protected $module_name = ''; //module名称
@@ -30,8 +30,8 @@ class Star_Controller_Front{
     protected $default_controller_name = 'index';
     protected $default_action_name = 'index';
     protected $module_key = 'module';
-    protected $controller_key = 'controller';
-    protected $action_key = 'action';
+    protected $controller_key = 'Controller';
+    protected $action_key = 'Action';
     protected $url_delimiter = '/';
     
     /**
@@ -120,6 +120,8 @@ class Star_Controller_Front{
         {
             $module = $this->defualt_module;
         }
+        $this->has_module = true;
+        
         return $this->module_controller_directory[$module] = $directory;
     }
     
@@ -226,6 +228,17 @@ class Star_Controller_Front{
     {
         return $this->action_key;
     }
+    
+    /**
+     * 设置默认module
+     * 
+     * @param type $module_name
+     * @return type
+     */
+    public function setDefaultModuleName($module_name)
+    {
+        return $this->defualt_module = $module_name;
+    }
 
     /**
      * 设置默认controller
@@ -256,7 +269,7 @@ class Star_Controller_Front{
      * @param type $module_name
      * @return \Star_Controller_Front 
      */
-    public function setModuleName($module_name)
+    protected function setModuleName($module_name)
     {
         !empty($module_name) && $this->module_name = $module_name;
         return $this;
@@ -273,7 +286,7 @@ class Star_Controller_Front{
         //如果controller_key不为空，则修改controller_key
         if ($controller_key)
         {
-            $this->controller_key = trim($controller_key);
+            $this->controller_key = ucfirst(trim($controller_key));
         }
         
         return $this;
@@ -287,7 +300,7 @@ class Star_Controller_Front{
      */
     public function setActionKey($action_key)
     {
-        $action_key && $this->action_key = trim($action_key);
+        $action_key && $this->action_key = ucfirst(trim($action_key));
         
         return $this;
     }
@@ -304,23 +317,18 @@ class Star_Controller_Front{
 		ob_start();
 
         try{
-            $class_name = $this->getControllerClass($this->request);
-            $this->loadClass($class_name);
+            $controller_name = $this->request->getControllerName();
             $action_name = $this->request->getActionName();
-            if (empty($action_name))
-            {
-                $action_name = $this->default_action_name;
-                $this->request->setActionName($action_name);
-            }
+            $controller_class_name = $this->loadClass($controller_name);
+            $view_path = dirname($this->getControllerDirectory()) . DIRECTORY_SEPARATOR . 'views';
 
-            $dir = dirname($this->getControllerDirectory()) . DIRECTORY_SEPARATOR . 'views';
             //设置view
-            $this->view->setBasePath($dir)
-                       ->setController($this->request->getControllerName())
-                       ->setScriptName($this->request->getActionName())
-                       ->setAction($this->request->getActionName());
-            $action = strtolower($action_name) . ucfirst($this->action_key);
-            $controller = new $class_name($this->request, $this->response, $this->view);            
+            $this->view->setBasePath($view_path)
+                       ->setController($controller_name)
+                       ->setScriptName($action_name)
+                       ->setAction($action_name);
+            $action = $action_name . $this->action_key;
+            $controller = new $controller_class_name($this->request, $this->response, $this->view);            
             $controller->dispatch($action); //执行action
             call_user_func(array('Star_Model_Abstract', 'Close')); //主动关闭数据库链接
         } catch (Exception $e)
@@ -335,12 +343,13 @@ class Star_Controller_Front{
     /**
      * 加载controller
      * 
-     * @param string $controller
+     * @param string $controller_name
      * @throws Star_Exception
      */
-    public function loadClass($controller)
+    public function loadClass($controller_name)
     {
-        $file_path = Star_Loader::getFilePath(array($this->getControllerDirectory(), $controller));
+        $controller_class_name = ucfirst($controller_name) . $this->controller_key;
+        $file_path = Star_Loader::getFilePath(array($this->getControllerDirectory(), $controller_class_name));
 
         if (Star_Loader::isExist($file_path) == false)
         {
@@ -350,48 +359,17 @@ class Star_Controller_Front{
         //文件是否可读
         if (!Star_Loader::isReadable($file_path))
         {
-            throw new Star_Exception("Connot load controller calss {$controller} from file {$file_path}", 500);
+            throw new Star_Exception("Connot load controller calss {$controller_class_name} from file {$file_path}", 500);
         }
         
         require $file_path;
         //类是否存在
-        if (!class_exists($controller, false))
+        if (!class_exists($controller_class_name, false))
         {
-            throw new Star_Exception("Invalid controller class ({$controller})", 404);
-        }
-    }
-    
-    /**
-     * 返回controller类
-     * 
-     * @param type $request
-     * @return type
-     * @throws Star_Exception 
-     */
-    public function getControllerClass(Star_Http_Request $request)
-    {
-        $controller_name = $request->getControllerName();
-        if (empty($controller_name))
-        {
-            $controller_name = $this->default_controller_name;
-            $request->setControllerName($controller_name);
+            throw new Star_Exception("Invalid controller class ({$controller_class_name})", 404);
         }
         
-        $module_name = $request->getModuleName();
-        if (empty($module_name))
-        {
-            $module_name = $this->defualt_module;
-        }
-        
-        if ($this->isValidModule($module_name))
-        {
-            $this->module_name = $module_name;
-        } else{
-            //TODO
-        }
-        
-        $controller = ucfirst($controller_name) . ucfirst($this->controller_key);
-        return $controller;
+        return $controller_class_name;
     }
     
     /**
@@ -416,17 +394,15 @@ class Star_Controller_Front{
     {
         if ($this->controller_directory == null)
         {
-            $module = $this->request->getModuleName();
-
-            if ($this->isValidModule($module))
+            if ($this->module_name)
             {
-                $this->controller_directory = $this->getModuleControllerDirectory($module);
+                $this->controller_directory = $this->getModuleControllerDirectory($this->module_name);
             } else {
-                $directory_name = Star_Loader::getLoadTypeByKey($this->getControllerkey());
+                $directory_name = Star_Loader::getLoadTypeByKey($this->controller_key);
                 $this->controller_directory = Star_Loader::getModuleDirect($directory_name);
             }
         }
-        
+
         return $this->controller_directory;
     }
     
@@ -488,42 +464,49 @@ class Star_Controller_Front{
         {
             $params = explode($this->url_delimiter, $path_info);
         }
+	
+        $values = array();
+
+        if ($this->has_module == true)
+        {
+            if (isset($params[0]) && !empty($params[0]) && $this->isValidModule($params[0]))
+            {
+                $module_name = array_shift($params);
+                $this->module_name = $module_name;
+                $values[$this->module_key] = $module_name;
+            } elseif ($this->isValidModule($this->defualt_module))
+            {
+                $this->module_name = $this->defualt_module;
+                $values[$this->module_key] = $this->defualt_module;
+            }
+        }
+
+        if (isset($params[0]) && !empty($params[0]))
+        {
+            $controller_name = array_shift($params);
+            $values[$this->controller_key] = strtolower($controller_name);
+        } else {
+            $values[$this->controller_key] = $this->default_controller_name;
+        }
+
+         if (isset($params[0]) && !empty($params[0]))
+        {
+            $action_name = array_shift($params);
+            $values[$this->action_key] = strtolower($action_name);
+        } else{
+            $values[$this->action_key] = $this->default_action_name;
+        }
+
+        if (!empty($params))
+        {
+            $count = count($params);
+            for ($i =0; $i<$count; $i = $i+2)
+            {
+                $values[$params[$i]] = isset($params[$i+1]) ? $params[$i+1] : '';
+            }
+        }
         
-		if (!empty($params))
-		{	
-            $values = array();
-			if (!empty($params))
-			{
-                if ($this->isValidModule($params[0]))
-                {
-                    $module_name = array_shift($params);
-                    $values[$this->module_key] = $module_name;
-                }
-                
-                if (count($params) && !empty($params[0]))
-                {
-                    $controller_name = array_shift($params);
-                    $values[$this->controller_key] = $controller_name;
-                }
-                
-                 if (count($params) && !empty($params[0]))
-                {
-                    $action_name = array_shift($params);
-                    $values[$this->action_key] = $action_name;
-                }
-                
-				if (!empty($params))
-                {
-                    $count = count($params);
-                    for ($i =0; $i<$count; $i = $i+2)
-                    {
-                        $values[$params[$i]] = isset($params[$i+1]) ? $params[$i+1] : '';
-                    }
-                }
-                $params = $values;
-			}
-		}
-        $this->setRequestParam($params);
+        $this->setRequestParam($values);
         return $this;
 	}
 
@@ -565,7 +548,7 @@ class Star_Controller_Front{
      */
     public function handleException($e)
     {
-        if ($e->getCode() == 404 && strtolower($this->request->getControllerName()) != 'error')
+        if ($e->getCode() == 404 && $this->request->getControllerName() != 'error')
         {
             $this->view->code = 404;
             $this->request->setControllerName('error')

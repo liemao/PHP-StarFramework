@@ -130,7 +130,7 @@ abstract class Star_View_Abstract {
 	 */
 	public function getScriptName()
 	{
-		return $this->_base_name;
+		return $this->_script_name;
 	}
 	
 	/**
