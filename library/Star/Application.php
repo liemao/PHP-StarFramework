@@ -247,15 +247,4 @@ class Star_Application {
         $this->bootstrap->front->setDefaultActionName($action_name);
         return $this;
     }
-    
-    /**
-     * 是否显示异常
-     * 
-     * @param type $flag
-     * @return type 
-     */
-    protected function setDisplayException($flag = false)
-    {
-        return $this->display_exceptions = $flag;
-    }
 }
