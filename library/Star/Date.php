@@ -195,9 +195,9 @@ class Star_Date {
         } else if ($second < 86400 * 30){
             $ago_time = floor($second/86400) . '天前';
         } else if ($second < 86400*365){
-            $ago_time = floor($second/86400*30) . '月前';
+            $ago_time = floor($second/(86400*30)) . '月前';
         } else{
-            $ago_time = floor($second/86400*365) . '年前';
+            $ago_time = floor($second/(86400*365)) . '年前';
         }
         return $ago_time;
     }
