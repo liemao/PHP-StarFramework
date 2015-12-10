@@ -110,10 +110,16 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		$conditions = '(' . $conditions . ')';
 		if($value !== null)
 		{
-			$value      =  is_array($value) ? implode(',', $value) : $value;
-			$this->_params[] = $value;
+            if (is_array($value))
+            {
+                $conditions_array = array_fill(0, count($value), '?');
+                $conditions = str_replace('?', implode(',', $conditions_array), $conditions);
+                $this->_params = array_merge($this->_params, $value);
+            } else{
+                $this->_params[] = $value;
+            }
 		}
-		$this->_where[] = !count($this->_where) ? $conditions :  $where_type . ' ' . $conditions;
+		$this->_where[] = empty($this->_where) ? $conditions :  $where_type . ' ' . $conditions;
 	}
 	
     /**
@@ -164,10 +170,10 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	protected function setTable($table, $is_join=true)
 	{
         $alias = '';
-		if (preg_match('/^(.+)\s+' . self::SQL_AS . '\s+(.+)$/i', $table, $buffer))
+		if (preg_match('/^(.+)\s+' . self::SQL_AS . '\s+(.+)$/i', $table, $table_info))
 		{
-			$table_name = $buffer[1];
-			$alias      = $buffer[2];
+			$table_name = $table_info[1];
+			$alias      = $table_info[2];
 		} else
 		{
 			$table_name = $table;
