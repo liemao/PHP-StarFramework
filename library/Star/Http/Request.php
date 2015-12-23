@@ -75,6 +75,12 @@ class Star_Http_Request extends Star_Http_Abstract
 		} else if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'])
 		{
             $url_info = parse_url(ltrim($_SERVER['REQUEST_URI'], '\\/'));
+            
+            if (!isset($url_info['path']))
+            {
+                $url_info['path'] = '';
+            }
+            
             if ($_SERVER['PHP_SELF'] == $url_info['path'])
             {
                 $path = str_replace($_SERVER['SCRIPT_NAME'], '', $url_info['path']);
