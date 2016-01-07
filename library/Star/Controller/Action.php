@@ -292,9 +292,9 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
         $this->disableLayout();
         $this->view->setNoRender();
         
-        if (isset($_GET['cb']) && !empty($_GET['cb']))
+        if (isset($_GET['callback']) && !empty($_GET['callback']))
         {
-            echo htmlspecialchars($_GET['cb']) . '(' . json_encode($message) . ')';
+            echo htmlspecialchars($_GET['callback']) . '(' . json_encode($message) . ')';
         } else{
             header('Content-Type: application/json');
             echo json_encode($message);
