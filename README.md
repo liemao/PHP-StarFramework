@@ -155,4 +155,4 @@ The view script for default controller and default action is in the application/
 
 #LICENSE
 
-StarFramework is is distributed under the terms of the MIT License.
+StarFramework is distributed under the terms of the MIT License.
