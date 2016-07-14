@@ -153,3 +153,6 @@ The view script for default controller and default action is in the application/
 </html>
 ```
 
+#LICENSE
+
+StarFramework is is distributed under the terms of the MIT License.
