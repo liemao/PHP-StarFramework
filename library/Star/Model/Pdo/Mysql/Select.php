@@ -110,16 +110,26 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 		$conditions = '(' . $conditions . ')';
 		if($value !== null)
 		{
-            if (is_array($value))
-            {
-                $conditions_array = array_fill(0, count($value), '?');
-                $conditions = str_replace('?', implode(',', $conditions_array), $conditions);
-                $this->_params = array_merge($this->_params, $value);
-            } else{
-                $this->_params[] = $value;
-            }
+			if (is_array($value))
+			{
+				foreach ($value as $k => $v)
+				{
+					if (!is_numeric($v))
+					{
+						unset($value[$k]);
+					}
+				}
+				$count = count($value);
+				$conditions = str_replace('?', implode(',', array_fill(0, $count, '?')),$conditions);
+				foreach ($value as $v)
+				{
+					$this->_params[] = $v;
+				}
+			} else {
+				$this->_params[] = $value;
+			}
 		}
-		$this->_where[] = empty($this->_where) ? $conditions :  $where_type . ' ' . $conditions;
+		$this->_where[] = !count($this->_where) ? $conditions :  $where_type . ' ' . $conditions;
 	}
 	
     /**
@@ -170,10 +180,10 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 	protected function setTable($table, $is_join=true)
 	{
         $alias = '';
-		if (preg_match('/^(.+)\s+' . self::SQL_AS . '\s+(.+)$/i', $table, $table_info))
+		if (preg_match('/^(.+)\s+' . self::SQL_AS . '\s+(.+)$/i', $table, $buffer))
 		{
-			$table_name = $table_info[1];
-			$alias      = $table_info[2];
+			$table_name = $buffer[1];
+			$alias      = $buffer[2];
 		} else
 		{
 			$table_name = $table;
@@ -523,6 +533,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
 				$sql = $this->$method($sql) . ' ';
 			}
 		}
+		
 		return array(
             'sql' => chop($sql),
             'params' => $this->_params,
@@ -573,7 +584,7 @@ class Star_Model_Pdo_Mysql_Select implements Star_Model_Select_Interface
             $identifers = array_reverse($identifers);
             foreach ($identifers as $key => $value)
             {
-                $sql = substr_replace($sql, is_numeric($params[$key]) ? $params[$key] : '"'. $this->disposeQuote($params[$key]) . '"', $value, 1);
+				$sql = substr_replace($sql, is_numeric($params[$key]) ? $params[$key] : '"' . $this->disposeQuote($params[$key]) . '"', $value, 1);
             }
             
         }

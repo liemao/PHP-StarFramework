@@ -109,13 +109,20 @@ class Star_Model_Mysqli_Select implements Star_Model_Select_Interface
 		if($value !== null)
 		{
 			if (is_array($value))
-            {
-                $value = implode(',', $value);
-                $conditions =  str_replace('?', $value , $conditions);
-            } else{
-                $value = $this->disposeQuote($value);
-                $conditions =  str_replace('?', '"' . $value . '"', $conditions);
-            }
+			{
+				foreach ($value as $k => $v)
+				{
+					if (!is_numeric($v))
+					{
+						unset($value[$k]);
+					}
+				}
+				
+				$value      =  implode(',', $value);
+				$conditions =  str_replace('?', $value, $conditions);
+			} else {
+				$conditions =  str_replace('?', '"' . $value . '"', $conditions);
+			}
 		}
 		$this->_where[] = !count($this->_where) ? $conditions :  $where_type . ' ' . $conditions;
 	}
