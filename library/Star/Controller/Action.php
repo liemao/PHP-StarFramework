@@ -266,8 +266,8 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 	protected function showWarning()
 	{
 		$args = func_get_args();
-		$this->view->message = $args[0];
-        $this->view->url = $args[1];
+		$this->view->message = isset($args[0]) ? $args[0] : '';
+        $this->view->url = isset($args[1]) ? $args[1] : '';
 		return $this->render(self::$_warning_script, false);
 	}
 	
@@ -279,25 +279,33 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 	protected function showJson()
 	{   
 		$args = func_get_args();
-		$message = array(
-			'err' => $args[0],
-			'message' => $args[0] > 0 ? $args[1] : $args[2],
+		$err = isset($args[0]) ? $args[0] : 0;
+		$message = '';
+		$data = array();
+		
+		if ($err > 0)
+		{
+			$meesgae = isset($args[1]) ? $args[1] : $message;
+		} else {
+			$data = isset($args[1]) ? $args[1] : $data;
+			$message = isset($args[2]) ? $args[2] : $message;
+		}
+		
+		$response = array(
+			'err' => $err,
+			'message' => $message,
+			'data' => $data,
 		);
-
-        if($args[0] == 0 && isset($args[1]))
-        {
-            $message['data'] = $args[1];
-        }
 
         $this->disableLayout();
         $this->view->setNoRender();
         
         if (isset($_GET['callback']) && !empty($_GET['callback']))
         {
-            echo htmlspecialchars($_GET['callback']) . '(' . json_encode($message) . ')';
+            echo htmlspecialchars($_GET['callback']) . '(' . json_encode($response) . ')';
         } else{
             header('Content-Type: application/json');
-            echo json_encode($message);
+            echo json_encode($response);
         }
 	}
     

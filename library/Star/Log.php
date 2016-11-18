@@ -14,8 +14,10 @@
 class Star_Log {
 	
     protected static $directory_name = 'logs';
-    
-    private static $model = 'a+';
+	
+	protected static $log_type = 'log';
+
+	private static $model = 'a+';
 
     protected static $file_path = '';
 
@@ -28,12 +30,10 @@ class Star_Log {
      * 
      * @param type $message 
      */
-    public static function log($message, $type = 'log')
+    public static function log($message, $type ='')
     {
-        $now = time();
-        $time = date('Y-m-d H:i:s', $now);
-        $file_name = "{$type}_" . date('Ymd', $now);
-        $message = "\n{$time}:  {$message}";
+        $file_name = (empty($type) ? self::$log_type : $type) . "_" . Star_Date::getDate();
+        $message = "\n{".Star_Date::timeToDate()."}:  {$message}";
 
         if (self::$file_path)
         {
@@ -76,6 +76,16 @@ class Star_Log {
     {
         self::$file_path = $file_path;
     }
+	
+	/**
+	 * 设置日志类型
+	 * 
+	 * @param type $type
+	 */
+	public static function setLogType($type)
+	{
+		self::$log_type = $type;
+	}
 }
 
 ?>
