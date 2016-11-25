@@ -14,7 +14,6 @@ class IndexController extends Star_Controller_Action
             'content' => 'Hello World.'
         ));
 	}
- 
 }
 
 ?>

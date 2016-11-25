@@ -115,23 +115,16 @@ class Star_Loader {
 		{
 			return ;
 		}
-
-		if (strtolower(substr($class_name, 0, 4)) == 'star')
-		{
-			$class_path = self::getClassPath($class_name);
-			
-			if ($class_path !== false)
-			{
-                if (!file_exists($class_path))
-                {
-                    trigger_error('Not found file ' . $class_path, E_USER_ERROR);
-                    return;
-                }
-                
-				require $class_path;
-                return ;
-			}
-		}
+		
+		$class_path = explode('_', $class_name);
+		array_unshift($class_path, self::$library_path);
+		$library_class_path = self::getFilePath($class_path);
+        //library目录下，则自动加载
+        if (file_exists($library_class_path))
+        {
+            require $library_class_path;
+            return ;
+        }
         
         $autoload_types = self::$autoload_types;
         
@@ -149,14 +142,6 @@ class Star_Loader {
 				}
 			}
 		}
-        
-        $library_class_path = self::getFilePath(array(self::$library_path, $class_name));
-        //library目录下，则自动加载
-        if (file_exists($library_class_path))
-        {
-            require $library_class_path;
-            return ;
-        }
 	}
 	
     /**
