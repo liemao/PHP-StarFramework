@@ -4,11 +4,6 @@
  */
 
 /**
- * 导入文件
- */
-require 'Star/Cache/Interface.php';
-
-/**
  * Memcach缓存类
  *
  * @package library\Star\Application\Cache
@@ -30,7 +25,7 @@ class Star_Cache_Memcache implements Star_Cache_Interface {
 	public function __construct(array $config)
 	{
 		$this->memcache = new Memcache();
-		if ($config['multi_cache'] == true)
+		if (isset($config['multi_cache']) && $config['multi_cache'] == true)
 		{
 			foreach ((array) $config['server'] as $memcache)
 			{

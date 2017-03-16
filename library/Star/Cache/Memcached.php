@@ -4,12 +4,6 @@
  */
 
 /**
- * 导入文件
- */
-require 'Star/Cache/Interface.php';
-
-
-/**
  * Memcached 缓存类
  *
  * @package library\Star\Application\Cache
@@ -32,7 +26,7 @@ class Star_Cache_Memcached implements Star_Cache_Interface {
 	{
 		$this->memcached = new Memcached();
 		
-		if ($config['multi_cache'] == true)
+		if (isset($config['multi_cache']) && $config['multi_cache'] == true)
 		{
 			$this->memcached->addServers($config['server']);
 			$this->memcached->setOption(Memcached::OPT_DISTRIBUTION, Memcached::DISTRIBUTION_CONSISTENT);

@@ -4,6 +4,11 @@
  */
 
 /**
+ * 导入文件
+ */
+require 'Star/Cache/Interface.php';
+
+/**
  * 缓存类
  * 
  * @package library\Star
@@ -139,36 +144,6 @@ class Star_Cache {
 	public static function delete($key)
 	{
 		return self::connection(self::$default_cache)->delete($key);
-	}
-	
-	public static function lPush($key, $value)
-	{
-		return self::connection(self::$default_cache)->lPush($key, $value);
-	}
-
-	public static function rPush($key, $value)
-	{
-		return self::connection(self::$default_cache)->rPush($key, $value);
-	}
-
-	public static function lPop($key)
-	{
-		return self::connection(self::$default_cache)->lPop($key);
-	}
-
-	public static function rPop($key)
-	{
-		return self::connection(self::$default_cache)->rPop($key);
-	}
-
-	public static function lSize($key)
-	{
-		return self::connection(self::$default_cache)->lSize($key);
-	}
-
-	public static function lRange($key, $start, $end)
-	{
-		return self::connection(self::$default_cache)->lRange($key, $start, $end);
 	}
 }
 
