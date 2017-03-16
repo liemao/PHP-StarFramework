@@ -152,6 +152,18 @@ class Star_Date {
     }
     
     /**
+     * 毫秒
+     * 
+     * @return int
+     */
+    public static function getMillisecond() 
+    {
+		list($s1, $s2) = explode(' ', microtime());
+		return (float)sprintf('%.0f', (floatval($s1) + floatval($s2)) * 1000);
+	}
+
+
+    /**
      * 返回当月开始时间
      * 
      * @return type 

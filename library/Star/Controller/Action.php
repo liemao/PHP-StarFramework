@@ -285,7 +285,7 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 		
 		if ($err > 0)
 		{
-			$meesgae = isset($args[1]) ? $args[1] : $message;
+			$message = isset($args[1]) ? $args[1] : $message;
 		} else {
 			$data = isset($args[1]) ? $args[1] : $data;
 			$message = isset($args[2]) ? $args[2] : $message;
