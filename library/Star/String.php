@@ -194,6 +194,19 @@ class Star_String {
     	
     	return $params;
     }
+
+    /**
+     * 字符串字符分割
+     *
+     * @param type $string
+     * @param type $split_length
+     * @param type $glue
+     * @return type
+     */
+    public static function strSplit($string, $split_length, $glue = ' ')
+    {
+        return implode($glue, str_split($string, $split_length));
+    }
     
     /**
      * 验证是否是正确邮箱根式
@@ -217,7 +230,7 @@ class Star_String {
      * @param type $mobile
      * @return boolean 
      */
-    public function isMobile($mobile)
+    public static function isMobile($mobile)
     {
         if (preg_match('/^1[0-9]{10}$/', $mobile))
         {
@@ -226,7 +239,19 @@ class Star_String {
             return false;
         }
     }
-    
+
+    /**
+     * 隐藏手机号码
+     *
+     * @param type $mobile
+     * @return type
+     */
+    public static function showMobile($mobile)
+    {
+        return preg_match('/^1[0-9]{10}$/', $mobile) == true ? substr_replace($mobile, '****', 4, 4) : $mobile;
+    }
+
+
     /**
      * 验证是否正确的用户名格式
      * 
@@ -269,6 +294,26 @@ class Star_String {
     {
         $mail_name_length = strpos($mail, '@');
         return str_replace(substr($mail, 1, $mail_name_length - 2), str_repeat('*', $mail_name_length - 3), $mail);
+    }
+
+    public static function beanToAmount($bean)
+    {
+        return number_format($bean/100, 2);
+    }
+
+    public static function showAmount($amount)
+    {
+        return number_format($amount, 2);
+    }
+
+    public static function setLazyImage($content)
+    {
+        return str_replace('src=', 'data-original=', $content);
+    }
+
+    public static function showLazyImage($content)
+    {
+        return str_replace('data-original=', 'src=', $content);
     }
 }
 

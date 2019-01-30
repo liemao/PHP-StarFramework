@@ -1,12 +1,12 @@
 <?php
 /**
- * @package library\Star\Application\Cache
+ * @package library\Star\Cache
  */
 
 /**
  * Memcach缓存类
  *
- * @package library\Star\Application\Cache
+ * @package library\Star\Cache
  * @author zhangqinyang
  */
 
@@ -107,7 +107,29 @@ class Star_Cache_Memcache implements Star_Cache_Interface {
             $this->memcache->close();
         }
     }
-	
+
+    public function incr($key, $increment_value = 1)
+    {
+        if ($this->memcache->get($key) === false)
+        {
+            return $this->memcache->set($key, $increment_value, false);
+        }
+        return $this->memcache->increment($key, $increment_value);
+    }
+
+    public function decr($key, $decrement_value = 1)
+    {
+        if ($this->memcache->get($key) === false)
+        {
+            return $this->memcache->set($key, $decrement_value, false);
+        }
+        return $this->memcache->decrement($key, $decrement_value);
+    }
+
+    public function expire($key, $timeout)
+    {
+        return ;
+    }
 }
 
 ?>

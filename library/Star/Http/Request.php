@@ -19,6 +19,7 @@ class Star_Http_Request extends Star_Http_Abstract
 {
     protected $params = array();
     protected $path_info = '';
+    public static $trace_id = '';
 
     /**
      * 构造方法
@@ -33,8 +34,19 @@ class Star_Http_Request extends Star_Http_Abstract
         }
 
 		$this->params = array_merge($_GET, $_POST);
+        $this->initTraceId();
 	}
-	
+
+    protected function initTraceId()
+    {
+        $client_ip = self::getIp();
+        $user_agent = self::getUserAgent();
+        $micotime = microtime();
+        $trace_id = substr(md5($client_ip . $user_agent . $micotime), 0, 6);
+        self::$trace_id = $trace_id . '-' . $client_ip;
+    }
+
+
     /**
      * 是否是POST请求
      * 
@@ -71,7 +83,7 @@ class Star_Http_Request extends Star_Http_Abstract
             {
                 $path = str_replace(str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']) , '', $path); //去除目录路径
             }
-            
+            $path = trim($path, '\\/');
 		} else if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'])
 		{
             $url_info = parse_url(ltrim($_SERVER['REQUEST_URI'], '\\/'));
@@ -130,14 +142,26 @@ class Star_Http_Request extends Star_Http_Abstract
      */
 	public function isAjax()
 	{
-		if (isset($_SERVER['HTTP_X_REQUESTED_WITH']))
+		if ((isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
+            || stripos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)
 		{
 			return true;
 		}
 		
 		return false;
 	}
-	
+
+    public function isWeixin()
+    {
+        if (strpos($_SERVER["HTTP_USER_AGENT"],"MicroMessenger"))
+        {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * 返回所有请求参数
      * 
@@ -157,7 +181,7 @@ class Star_Http_Request extends Star_Http_Abstract
      */
 	public function getParam($key, $default = '')
 	{
-		return isset($this->params[$key]) ? $this->params[$key] : $default;
+		return !empty($this->params[$key]) ? $this->params[$key] : $default;
 	}
 	
     /**
@@ -190,6 +214,14 @@ class Star_Http_Request extends Star_Http_Abstract
 	{
 		return isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
 	}
+
+    /**
+     *
+     */
+    public function getTraceId()
+    {
+        return self::$trace_id;
+    }
     
     /**
      * 返回用户访问IP 

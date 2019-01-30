@@ -18,6 +18,7 @@ class Star_Loader {
 		'service' => 'services',
 		'controller' => 'controllers',
 		'model' => 'models',
+        'queue' => 'queues',
 	);
 	
     /**
@@ -264,7 +265,7 @@ class Star_Loader {
      */
     public static function getFilePath(array $segments, $postfix = '.php', $dir_separator = DIRECTORY_SEPARATOR)
     {
-        $path = implode($dir_separator, $segments);
+        $path = implode($dir_separator, array_filter($segments));
         return $path . $postfix;
     }
     

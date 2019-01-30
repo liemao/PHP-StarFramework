@@ -79,9 +79,15 @@ class Star_Http_Response
         $message = self::$messages[$code];
         return 'HTTP/1.1 ' . $code . ' ' . $message;
     }
+
+    public static function setStatus($code)
+    {
+        $message = self::$messages[$code];
+        header('HTTP/1.1 ' . $code . ' ' . $message);
+    }
     
     /**
-     * 设置流浪器缓存
+     * 设置浏览器缓存
      * @param unknown $timeout
      */
     public static function setBrownerCache($timeout)

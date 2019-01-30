@@ -150,8 +150,29 @@ class Star_Date {
         
         return $time;
     }
-    
+
     /**
+     * 获取几天前开始或结束时间
+     *
+     * @param type $days
+     * @param type $is_begin
+     * @return type
+     */
+    public static function getDayAgo($days, $is_begin = true)
+    {
+        list($year, $month , $day) = explode('-', date('Y-m-d', (time() - 86400 * $days)));
+
+        if ($is_begin == true)
+        {
+            $time = mktime(0, 0, 0, $month, $day, $year);
+        } else {
+            $time = mktime(23, 59, 59, $month, $day, $year);
+        }
+
+        return $time;
+    }
+
+        /**
      * 毫秒
      * 
      * @return int

@@ -13,6 +13,7 @@
 Class Star_Model_Api
 {    
     protected $server_name = '';
+    protected $protocol = 'http';
     protected $timeout = 3000;
 	protected static $config = array();
 
@@ -44,26 +45,47 @@ Class Star_Model_Api
             }
         }
     }
-    
+
     /**
-     * api返回数据
-     * 
+     * API GET
+     *
      * @param type $script_name
      * @param type $params
-     * @param type $method
+     * @param type $timeout
      * @param type $cookie
+     * @param type $headers
      * @param type $protocol
-     * @param int $timeout
-     * @return type 
+     * @return type
      */
-    public function api($script_name, $params = '', $method = 'get', $cookie = '', $protocol = 'http', $timeout = 0, $headers = array())
+    public function apiGet($script_name, $params = '', $timeout = 0, $cookie = '', $headers = array(), $protocol = '')
     {
         $query_string = $this->getQueryString($params);
         $cookie_string = $this->getCookieString($cookie);
-        return $this->httpQuery($script_name, $query_string, $method, $cookie_string, $protocol, $timeout, $headers);
+        $response_body = $this->httpQuery($script_name, $query_string, 'get', $timeout, $cookie_string, $headers, $protocol);
+        return json_decode($response_body, true);
     }
-	
-	/**
+
+    /**
+     * API POST
+     *
+     * @param type $script_name
+     * @param type $params
+     * @param type $timeout
+     * @param type $cookie
+     * @param type $headers
+     * @param type $protocol
+     * @return type
+     */
+    public function apiPost($script_name, $params = '',  $timeout = 0, $cookie = '', $headers = array(), $protocol = '')
+    {
+        $query_string = $this->getQueryString($params);
+        $cookie_string = $this->getCookieString($cookie);
+        $response_body = $this->httpQuery($script_name, $query_string, 'post', $timeout, $cookie_string, $headers, $protocol);
+        return json_decode($response_body, true);
+    }
+
+
+    /**
 	 * POST JSON
 	 * 
 	 * @param type $script_name
@@ -73,23 +95,25 @@ Class Star_Model_Api
 	 * @param type $timeout
 	 * @return type
 	 */
-	protected function apiJson($script_name, $params = '', $cookie = '', $protocol = 'http', $timeout = 0, $headers = array())
+	public function apiJson($script_name, $params = '', $timeout = 0, $cookie = '', $headers = array(), $protocol = '')
 	{
 		$query_string = is_array($params) ? json_encode($params) : $params;
 		$cookie_string = $this->getCookieString($cookie);
 		array_push($headers, 'Content-Type: application/json');
-		return $this->httpQuery($script_name, $query_string, 'post', $cookie_string, $protocol, $timeout, $headers);
+		$response_body = $this->httpQuery($script_name, $query_string, 'post', $timeout, $cookie_string, $headers, $protocol);
+        return json_decode($response_body, true);
 	}
 
-	private function httpQuery($script_name, $query_string, $method, $cookie_string, $protocol, $timeout, $headers = array())
+	private function httpQuery($script_name, $query_string, $method, $timeout, $cookie_string, $headers = array(), $protocol)
 	{
+        $protocol = empty($protocol) ? $this->protocol : $protocol;
 		if (strcmp($protocol . "://", substr($script_name, 0, strlen($protocol . "://"))) !== 0)
         {
             $url = $protocol . "://" . $this->getServerName() . $script_name;
         } else {
             $url = $script_name;
         }
-        
+
         $ch = curl_init();
 	    if ('GET' == strtoupper($method))
 	    {
@@ -145,11 +169,11 @@ Class Star_Model_Api
             $stact_trace = implode("\n", $stact_trace);
             Star_Log::log($url . "?" . $query_string . "\n" . json_encode($message) . "\n" . $stact_trace, 'query_error');
             
-            return ;
+            return false;
 	    }
 	    
        	curl_close($ch);
-        return json_decode($rs, true);
+        return $rs;
 	}
 
 	/**
@@ -202,7 +226,13 @@ Class Star_Model_Api
     {
         $this->server_name = $server_name;
     }
-    
+
+    protected function setProtocol($protocol)
+    {
+        $this->protocol = $protocol;
+    }
+
+
     /**
      * 返回server_name
      * 

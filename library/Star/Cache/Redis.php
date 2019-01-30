@@ -1,12 +1,12 @@
 <?php
 /**
- * @package library\Star\Application\Cache
+ * @package library\Star\Cache
  */
 
 /**
  * Redis 缓存类
  * 
- * @package library\Star\Application\Cache
+ * @package library\Star\Cache
  * @author zhangqinyang
  *
  */

@@ -15,18 +15,13 @@ require 'Star/Controller/Action/Interface.php';
  */
 class Star_Controller_Action implements Star_Controller_Action_Interface{
 
-	protected $request;
-	
+    protected $is_terminate = false; //是否终止 init终止则不执行action
+    protected $request;
 	protected $response;
-	
 	public $view;
-	
 	public $layout;
-    
     protected $front_controller;
-
     protected static $_message_script = 'message';
-    
     protected static $_warning_script = 'warning';
 
     /**
@@ -138,6 +133,11 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
      */
     public function dispatch($action) 
     {
+        if ($this->is_terminate == true)
+        {
+            return ;
+        }
+
         if (method_exists($this, $action))
         {
             $this->$action();
@@ -244,6 +244,12 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 		header('Location:' . $url);
 		return ;
 	}
+
+    //init终止，不继续执行action
+    protected function terminateAction()
+    {
+        return $this->is_terminate = true;
+    }
 	
     /**
      * 显示提示信息
@@ -252,12 +258,13 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
      */
 	protected function showMessage()
 	{
+        $this->terminateAction();
 		$args = func_get_args();
 		$this->view->message = $args[0];
         $this->view->url = $args[1];
 		return $this->render(self::$_message_script, false);
 	}
-	
+
     /**
      * 显示警告信息
      * 
@@ -265,6 +272,7 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
      */
 	protected function showWarning()
 	{
+        $this->terminateAction();
 		$args = func_get_args();
 		$this->view->message = isset($args[0]) ? $args[0] : '';
         $this->view->url = isset($args[1]) ? $args[1] : '';
@@ -279,24 +287,30 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
 	protected function showJson()
 	{   
 		$args = func_get_args();
-		$err = isset($args[0]) ? $args[0] : 0;
-		$message = '';
-		$data = array();
-		
-		if ($err > 0)
-		{
-			$message = isset($args[1]) ? $args[1] : $message;
-		} else {
-			$data = isset($args[1]) ? $args[1] : $data;
-			$message = isset($args[2]) ? $args[2] : $message;
-		}
-		
-		$response = array(
-			'err' => $err,
-			'message' => $message,
-			'data' => $data,
-		);
+        if (is_array($args[0])) {
+            $response = $args[0];
+        } else {
+            $status = isset($args[0]) ? $args[0] : 200;
+            $message = '';
+            $data = array();
 
+            if ($status !== 200)
+            {
+                $message = isset($args[1]) ? $args[1] : $message;
+                $data = isset($args[2]) ? $args[2] : $data;
+            } else {
+                $data = isset($args[1]) ? $args[1] : $data;
+                $message = isset($args[2]) ? $args[2] : $message;
+            }
+
+            $response = array(
+                'status' => $status,
+                'message' => $message,
+                'data' => $data,
+            );
+        }
+
+        $this->terminateAction();
         $this->disableLayout();
         $this->view->setNoRender();
         
@@ -306,6 +320,7 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
         } else{
             header('Content-Type: application/json');
             echo json_encode($response);
+            exit;
         }
 	}
     
@@ -316,6 +331,7 @@ class Star_Controller_Action implements Star_Controller_Action_Interface{
      */
     protected function show404()
     {
+        $this->terminateAction();
         throw new Star_Exception('404 not found.', 404);
     }
     

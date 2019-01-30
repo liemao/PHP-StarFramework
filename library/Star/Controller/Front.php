@@ -16,7 +16,6 @@ require 'Star/Controller/Action.php';
 require 'Star/Controller/Router/Route/Module.php';
 class Star_Controller_Front{
 
-    protected $debug = false; //默认关闭
     protected $request; //Star_Http_Request
 	protected $response; //Star_Http_Response
     protected $view; //Star_View
@@ -317,6 +316,7 @@ class Star_Controller_Front{
 		ob_start();
 
         try{
+            $module_name = $this->request->getModuleName();
             $controller_name = $this->request->getControllerName();
             $action_name = $this->request->getActionName();
             $controller_class_name = $this->loadClass($controller_name);
@@ -324,6 +324,7 @@ class Star_Controller_Front{
 
             //设置view
             $this->view->setBasePath($view_path)
+                       ->setModule($module_name)
                        ->setController($controller_name)
                        ->setScriptName($action_name)
                        ->setAction($action_name);
@@ -392,39 +393,14 @@ class Star_Controller_Front{
      */
     public function getControllerDirectory()
     {
-        if ($this->controller_directory == null)
+        if ($this->module_name)
         {
-            if ($this->module_name)
-            {
-                $this->controller_directory = $this->getModuleControllerDirectory($this->module_name);
-            } else {
-                $directory_name = Star_Loader::getLoadTypeByKey($this->controller_key);
-                $this->controller_directory = Star_Loader::getModuleDirect($directory_name);
-            }
+            $this->controller_directory = $this->getModuleControllerDirectory($this->module_name);
+        } elseif ($this->controller_directory == null) {
+            $directory_name = Star_Loader::getLoadTypeByKey($this->controller_key);
+            $this->controller_directory = Star_Loader::getModuleDirect($directory_name);
         }
-
         return $this->controller_directory;
-    }
-    
-    /**
-     * 设置debug状态
-     * 
-     * @param type $flag
-     * @return type 
-     */
-    protected function setDebug($debug = false)
-    {
-        return $this->debug = $debug;
-    }
-    
-    /**
-     * 返回debug状态
-     * 
-     * @return type 
-     */
-    protected function getDebug()
-    {
-        return $this->debug;
     }
     
     /**
@@ -548,28 +524,23 @@ class Star_Controller_Front{
      */
     public function handleException($e)
     {
-        if ($e->getCode() == 404 && $this->request->getControllerName() != 'error')
+        if ($this->request->getControllerName() == 'error')
         {
-            $this->view->code = 404;
-            $this->request->setControllerName('error')
-                          ->setActionName('index');
-            return $this->dispatch();
+            header(Star_Http_Response::getCodeMessage($e->getCode()));
+            return ;
         }
 
-        if ($this->debug == true)
+        if (Star_Config::get('resources.debug') == true && $e->getCode() != 404)
         {
             echo nl2br($e->__toString());
-        }else{
+        }elseif ($e->getCode() != 404){ //50x错误记录日志
             call_user_func(array('Star_Log', 'log'), $e->__toString(), 'error');
         }
         
-        if ($e->getCode() == 500)
-        {
-            $this->view->code = 500;
-            $this->request->setControllerName('error')
-                          ->setActionName('index');
-            return $this->dispatch();
-        }
+        $this->view->code = $e->getCode();
+        $this->request->setControllerName('error')
+                      ->setActionName('index');
+        return $this->dispatch();
     }
 }
 

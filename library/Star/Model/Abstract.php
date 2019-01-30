@@ -12,7 +12,7 @@ abstract class Star_Model_Abstract
 {
 	const ADAPTER = 'db';
 	
-	const SLAVE_ADAPTER = 'slave_db';
+	const SLAVE_ADAPTER = 'slave';
 	
 	protected $_primary = null; //主键
 	
@@ -105,7 +105,7 @@ abstract class Star_Model_Abstract
 		
 		$slave_options = $config[self::SLAVE_ADAPTER];
 
-		if ($config['multi_slave_db'] == true && !empty($slave_options))
+		if ($config['multi_slave'] == true && !empty($slave_options))
 		{
 			$option = $slave_options[array_rand($slave_options)];
 		} else
@@ -167,7 +167,7 @@ abstract class Star_Model_Abstract
      */
 	public function query($sql)
 	{
-        if ($this->getAdapter()->isSelect() == true)
+        if ($this->getAdapter()->isSelect($sql) == true)
         {
             return $this->getAdapter()->query($sql);
         } else{
@@ -308,7 +308,7 @@ abstract class Star_Model_Abstract
             $adapter_path = str_replace('_', '/', $adapter);
             require_once "Star/Model/{$adapter_path}/Abstract.php";
 			$adapter = 'Star_Model_' . $adapter . '_Abstract';
-			return new $adapter($db['params']);
+			return new $adapter($db);
 		}
 	}
 	
@@ -457,12 +457,6 @@ abstract class Star_Model_Abstract
     	{
     		$where = $this->_primary . ' = ' . $where;
     	}
-    	
-    	if (is_array($where))
-    	{
-    		$where = $this->_primary . ' IN (' . implode(',', $where) . ')';
-    	}
-    	
     	return $where;
     }
     

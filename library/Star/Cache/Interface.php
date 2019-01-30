@@ -1,11 +1,11 @@
 <?php
 /**
- * @package library\Star\Application\Cache
+ * @package library\Star\Cache
  */
 
 /**
  * 缓存  接口
- * @package library\Star\Application\Cache
+ * @package library\Star\Cache
  * @author zhangqinyang
  *
  */

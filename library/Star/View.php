@@ -56,7 +56,6 @@ class Star_View extends Star_View_Abstract{
                 }
             }
         }
-
     }
 }
 

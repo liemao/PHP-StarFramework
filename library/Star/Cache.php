@@ -46,12 +46,12 @@ class Star_Cache {
      */
 	public function factory(array $config)
 	{
-		$cache_adapt = ucfirst($config['adapter']);
-		$cache_class = "Star_Cache_{$cache_adapt}";
+		$cache_adapter = ucfirst($config['adapter']);
+		$cache_class = "Star_Cache_{$cache_adapter}";
 
-		if (!in_array($cache_adapt, $this->cache_types))
+		if (!in_array($cache_adapter, $this->cache_types))
 		{
-			throw new Star_Exception( $cache_adapt . ' cache adapter isn\'t supported.');
+			throw new Star_Exception( 'Unsupport '. $cache_adapter . ' cache adapter.');
 			return ;
 		}
 
@@ -83,7 +83,7 @@ class Star_Cache {
         return self::$instance->caches[$connection];
     }
 
-        /**
+    /**
      * 单例模式
      * @param array $config
      * @return Star_Cache
@@ -145,6 +145,21 @@ class Star_Cache {
 	{
 		return self::connection(self::$default_cache)->delete($key);
 	}
+
+    public static function incr($key, $increment_value = 1)
+    {
+        return self::connection(self::$default_cache)->incr($key, $increment_value);
+    }
+
+    public static function decr($key, $decrement_value = 1)
+    {
+        return self::connection(self::$default_cache)->decr($key, $decrement_value);
+    }
+
+    public static function expire($key, $timeout)
+    {
+        return self::connection(self::$default_cache)->expire($key, $timeout);
+    }
 }
 
 ?>

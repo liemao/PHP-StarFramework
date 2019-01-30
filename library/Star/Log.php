@@ -33,7 +33,7 @@ class Star_Log {
     public static function log($message, $type ='')
     {
         $file_name = (empty($type) ? self::$log_type : $type) . "_" . Star_Date::getDate();
-        $message = "\n{".Star_Date::timeToDate()."}:  {$message}";
+        $message = Star_Date::timeToDate().":  {$message}\n";
 
         if (self::$file_path)
         {

@@ -217,7 +217,19 @@ abstract class Star_Application_Bootstrap_Abstract
         call_user_func(array('Star_Model_Abstract', 'setting'), $options);
         return $this;
     }
-    
+
+    /**
+     * 设置队列
+     *
+     * @param type $options
+     */
+    public function setQueue($options)
+    {
+        require 'Star/Queue/Abstract.php';
+        Star_Queue_Abstract::setConfigs($options);
+    }
+
+
     /**
      * 设置Api
      * 

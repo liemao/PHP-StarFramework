@@ -13,17 +13,20 @@
 abstract class Star_View_Abstract {
 	
 	protected $_script_name = '';
-	protected $_base_name = '';
+    protected $_cache_path = '';
+    protected $_base_name = '';
 	protected $_is_controller = true;
 	protected $_is_display = true; //是否显示view
-	protected $_controller; 
+    protected $_module;
+    protected $_controller;
     protected $_action;
     protected $_postfix = '.phtml'; //后缀
 	protected $_theme_name = 'scripts';
-    protected $_template_name = 'templates';
+    protected $_widget_name = 'widgets';
 	protected $layout = '';
 	protected $default_view = 'views';
-	protected $encoding = 'UTF-8'; //默认编码
+    protected $is_template = false; //是否启动模板引擎，默认关闭模板引擎
+    protected $encoding = 'UTF-8'; //默认编码
     protected $static_options = array(); //静态资源配置
     protected $js_options = array(); //js配置
     protected $css_options = array(); //css配置
@@ -50,8 +53,39 @@ abstract class Star_View_Abstract {
 	{
 
 	}
-	
-	/**
+
+    protected function setTemplate($is_template)
+    {
+        return $this->is_template = $is_template;
+    }
+
+    /**
+     * 返回缓存文件存储路径
+     *
+     * @return type
+     */
+    public function getCachePath()
+    {
+        if (!$this->_cache_path) //缓存目录路径，防止开启layout修改base_name
+        {
+            $this->_cache_path = dirname($this->_base_name);
+        }
+        
+        return $this->_cache_path;
+    }
+
+    /**
+     * 设置缓存文件存储路径
+     *
+     * @param type $cache_path
+     * @return type
+     */
+    protected function setCachePath($cache_path)
+    {
+        return $this->_cache_path = $cache_path;
+    }
+
+    /**
 	 * 设置控制器名
      * 
 	 * @param string $script_name
@@ -114,8 +148,43 @@ abstract class Star_View_Abstract {
 		$this->_base_name = $base_path;
 		return $this;
 	}
-	
-	/**
+
+    /**
+     * 设置view文件后缀
+     *
+     * @param type $postfix
+     * @return $this
+     */
+    protected function setPostfix($postfix)
+    {
+        $this->_postfix = $postfix;
+        return $this;
+    }
+
+    /**
+     * 返回view是否添加conroller目录
+     *
+     * @return type
+     */
+    public function getIsController()
+    {
+        return $this->_is_controller;
+    }
+
+    /**
+     * 设置view路径是否默认添加controller
+     *
+     * @param type $bool
+     * @return $this
+     */
+    protected function setIsController($bool)
+    {
+        $this->_is_controller = (bool) $bool;
+        return $this;
+    }
+
+
+    /**
 	 * 获取基础路径
 	 * @return string
 	 */
@@ -132,8 +201,40 @@ abstract class Star_View_Abstract {
 	{
 		return $this->_script_name;
 	}
-	
-	/**
+
+    /**
+     * 返回module
+     *
+     * @return type
+     */
+    public function getModule()
+    {
+        return $this->_module;
+    }
+
+    /**
+     * 设置modules
+     *
+     * @param type $module
+     * @return $this
+     */
+    public function setModule($module)
+    {
+        $this->_module = $module;
+        return $this;
+    }
+
+    /**
+     * 返回controller
+     * 
+     * @return type
+     */
+    public function getController()
+    {
+        return $this->_controller;
+    }
+
+    /**
 	 * 设置控制器
 	 * @param string $controller
 	 * @return Star_View_Abstract
@@ -143,6 +244,16 @@ abstract class Star_View_Abstract {
 		$this->_controller = $controller;
 		return $this;
 	}
+
+    /**
+     * 返回action
+     *
+     * @return type
+     */
+    public function getAction()
+    {
+        return $this->_action;
+    }
     
 	/**
 	 * 设置控制器中具体某方法
@@ -161,7 +272,7 @@ abstract class Star_View_Abstract {
      * 
      * @return Ambigous <type, string>
      */
-	private function getViewPath()
+	public function getViewPath()
 	{
         $view_segments = array($this->_base_name, $this->_theme_name);
 		if ($this->_is_controller == true)
@@ -216,13 +327,22 @@ abstract class Star_View_Abstract {
 
 			exit;
 		}
-		
-		$view_path = realpath($view_path);
-		include $view_path;
+
+        //是否启动模板引擎
+        if ($this->is_template == true)
+        {
+            $template = new Star_Template();
+            $template_complite_path = $template->setView($this)
+                     ->parseTemplate();
+            include $template_complite_path;
+        } else {
+            $view_path = realpath($view_path);
+            include $view_path;
+        }
 	}
 	
 	/**
-	 * 设置视图模板
+	 * 设置视图主题
      * 
 	 * @param unknown $theme
 	 * @return Star_View_Abstract
@@ -234,7 +354,7 @@ abstract class Star_View_Abstract {
 	}
 	
 	/**
-	 * 获取视图模板
+	 * 获取视图主题
      * 
 	 * @return string
 	 */
@@ -296,7 +416,7 @@ abstract class Star_View_Abstract {
      */
     public function setStaticBasePath($path)
     {
-        $this->static_options['base_path'] = $path;
+        $this->static_options['basePath'] = $path;
         return $this;
     }
     
@@ -308,7 +428,7 @@ abstract class Star_View_Abstract {
      */
     public function setJsBasePath($path)
     {
-        $this->js_options['base_path'] = $path;
+        $this->js_options['basePath'] = $path;
         return $this;
     }
     
@@ -320,7 +440,7 @@ abstract class Star_View_Abstract {
      */
     public function setCssBasePath($path)
     {
-        $this->css_options['base_path'] = $path;
+        $this->css_options['basePath'] = $path;
         return $this;
     }
     
@@ -400,7 +520,7 @@ abstract class Star_View_Abstract {
      */
     public function getStaticBasePath()
     {
-        return isset($this->static_options['base_path']) ? $this->static_options['base_path'] : "";
+        return isset($this->static_options['basePath']) ? $this->static_options['basePath'] : "";
     }
     
     /**
@@ -443,9 +563,9 @@ abstract class Star_View_Abstract {
     public function setCssConfig($options)
     {
         //设置基础路径
-        if (isset($options['base_path']) && !empty($options['base_path']))
+        if (isset($options['basePath']) && !empty($options['basePath']))
         {
-            $this->setCssBasePath($options['base_path']);
+            $this->setCssBasePath($options['basePath']);
         }
 
         //添加加载css文件
@@ -466,9 +586,9 @@ abstract class Star_View_Abstract {
     public function setStaticConfig($options)
     {
         //设置静态资源基础路径
-        if (isset($options['base_path']) && !empty($options['base_path']))
+        if (isset($options['basePath']) && !empty($options['basePath']))
         {
-            $this->setStaticBasePath($options['base_path']);
+            $this->setStaticBasePath($options['basePath']);
         }
         
         //设置静态资源版本号
@@ -486,9 +606,9 @@ abstract class Star_View_Abstract {
     public function setJsConfig($options)
     {   
         //设置基础路径
-        if (isset($options['base_path']) && !empty($options['base_path']))
+        if (isset($options['basePath']) && !empty($options['basePath']))
         {
-            $this->setJsBasePath($options['base_path']);
+            $this->setJsBasePath($options['basePath']);
         }
 
         //添加加载js文件
@@ -561,7 +681,7 @@ abstract class Star_View_Abstract {
      */
     public function getJsBasePath()
     {
-        return isset($this->js_options['base_path']) && $this->js_options['base_path'] ? $this->js_options['base_path'] : (isset($this->static_options['base_path']) ? $this->static_options['base_path'] : "");
+        return isset($this->js_options['basePath']) && $this->js_options['basePath'] ? $this->js_options['basePath'] : (isset($this->static_options['basePath']) ? $this->static_options['basePath'] : "");
     }
     
     /**
@@ -570,7 +690,7 @@ abstract class Star_View_Abstract {
      */
     public function getCssBasePath()
     {
-        return isset($this->css_options['base_path']) && $this->css_options['base_path'] ? $this->css_options['base_path'] : (isset($this->static_options['base_path']) ? $this->static_options['base_path'] : "");
+        return isset($this->css_options['basePath']) && $this->css_options['basePath'] ? $this->css_options['basePath'] : (isset($this->static_options['basePath']) ? $this->static_options['basePath'] : "");
     }
     
     /**
@@ -584,7 +704,12 @@ abstract class Star_View_Abstract {
         $this->timeout = (int) $timeout;
         return $this;
     }
-    
+
+    public function getCacheDirectory()
+    {
+        return $this->cache_directory;
+    }
+
     /**
      * 设置缓存路径
      * 
@@ -635,7 +760,7 @@ abstract class Star_View_Abstract {
     public function loadCache()
     {
         $cache_path = $this->getCacheFileName(); //缓存文件
-        
+
         //判断文件是否存在
         if (!is_file($cache_path))
         {
@@ -717,6 +842,7 @@ abstract class Star_View_Abstract {
         }
         
         $this->is_cache = true;
+        Star_Http_Response::setBrownerCache($this->timeout);
     }
     
     /**
@@ -736,9 +862,15 @@ abstract class Star_View_Abstract {
      */
     public function getCacheFileName()
     {
+        if (!$this->_cache_path) //缓存目录路径，防止开启layout修改base_name
+        {
+            $this->_cache_path = dirname($this->_base_name);
+        }
+
         $segments = array(
-            dirname($this->_base_name),
+            $this->_cache_path,
             $this->cache_directory,
+            $this->_module,
             $this->_controller,
             $this->_action,
             $this->cache_name
@@ -772,34 +904,47 @@ abstract class Star_View_Abstract {
     }
 
     /**
-     * 导入模板
+     * 加载挂件
      * 
      * @param $file_name
      * @return type
      */
-    public function loadTemplate($file_name)
+    public function loadWidget($file_name)
     {
 
-        $view_path = $this->getTemplatePath($file_name);
+        $view_path = $this->getWidgetPath($file_name);
         if (!is_file($view_path))
         {
             throw new Star_Exception( $view_path . ' not found', 500);
-
             exit;
         }
-        $view_path = realpath($view_path);
-        include $view_path;
+
+        if ($this->is_template == true)
+        {
+            $template = new Star_Template();
+            $template_complite_path = $template->setView($this)
+                     ->parseWidget($file_name);
+            include $template_complite_path;
+        } else {
+            $view_path = realpath($view_path);
+            include $view_path;
+        }
+    }
+
+    public function getWidgetDir()
+    {
+        return $this->_widget_name;
     }
 
     /**
-     * 获取模板绝对地址
+     * 获取挂件绝对地址
      * 
      * @param $file_name
      * @return type
      */
-    private function getTemplatePath($file_name)
+    public function getWidgetPath($file_name)
     {
-        $view_segments = array($this->_base_name, $this->_template_name,$file_name);
+        $view_segments = array($this->_base_name, $this->_widget_name,$file_name);
         $view_path = Star_Loader::getFilePath($view_segments, $this->_postfix);
         return $view_path;
     }

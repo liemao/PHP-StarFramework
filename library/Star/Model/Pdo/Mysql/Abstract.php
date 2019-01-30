@@ -129,11 +129,33 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
             $value = $this->quoteIdentifier($column) . ' = ' .  ($quote_indentifier === true ? '?' : $value);
 		}
 		
-		$sql = 'UPDATE ' . $this->quoteIdentifier($table) . ' SET ' . implode(',', $data) . ' WHERE ' . $where;
+		$sql = 'UPDATE ' . $this->quoteIdentifier($table) . ' SET ' . implode(',', $data) . ' WHERE ' . $this->setWhere($where);
 		$stmt = $this->_query($sql, $params);
 		return $stmt->rowCount();
 		
 	}
+
+    protected function setWhere($where)
+    {
+        if (is_array($where))
+        {
+            $data = $where;
+            $where = array();
+            foreach ($data as $key => $value)
+            {
+                if (is_array($value))
+                {
+                    $where[] = $key . ' in( ' . implode(',', $this->quoteIdentifier($value, true)) . ' )';
+                } else {
+                    $where[] = $key . ' = ' . $this->quoteIdentifier($value, true);
+                }
+            }
+            $where = implode(' AND ', $where);
+        } else {
+
+        }
+        return $where;
+    }
 	
 	/**
      * 删除数据
@@ -144,7 +166,7 @@ class Star_Model_Pdo_Mysql_Abstract implements Star_Model_Interface
      */
 	public function delete($table, $where)
 	{
-		$sql = 'DELETE FROM ' . $table . ' WHERE ' . $where;
+		$sql = 'DELETE FROM ' . $table . ' WHERE ' . $this->setWhere($where);
 		$stmt = $this->_query($sql);
 		return $stmt->rowCount();
 	}
